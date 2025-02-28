@@ -1,0 +1,73 @@
+📦 project-root/
+├── 📂 app/
+│   ├── 📂 screens/                  # Chứa toàn bộ màn hình chính
+│   │   ├── DataObservationScreen.tsx
+│   │   ├── DeviceControlScreen.tsx
+│   │   ├── HomeScreen.tsx
+│   │   ├── ProfileScreen.tsx
+│   │   └── NotFoundScreen.tsx
+│   ├── 📂 navigation/               # Chứa file điều hướng
+│   │   ├── BottomTabNavigator.tsx
+│   │   ├── StackNavigator.tsx
+│   │   └── NavigationProvider.tsx
+│   ├── _layout.tsx                  # Layout chính của ứng dụng
+│   ├── app.json
+│   └── tsconfig.json
+├── 📂 assets/                        # Chứa các tài nguyên tĩnh
+│   ├── fonts/
+│   ├── icons/
+│   └── images/
+├── 📂 components/                    # Chứa các component dùng chung
+│   ├── 📂 common/                    # Các thành phần UI chung
+│   │   ├── Button.tsx
+│   │   ├── Card.tsx
+│   │   ├── Graph.tsx
+│   │   ├── Navbar.tsx
+│   │   └── Modal.tsx
+│   ├── 📂 ui/                        # UI cụ thể (icon, tab bar,...)
+│   │   ├── IconSymbol.tsx
+│   │   ├── TabBarBackground.tsx
+│   └── __tests__/                    # Các file test
+│       ├── Button.test.tsx
+│       ├── Card.test.tsx
+│       ├── Graph.test.tsx
+│       └── __snapshots__/
+├── 📂 contexts/                      # Quản lý trạng thái toàn cục
+│   ├── AuthContext.tsx
+│   ├── ThemeContext.tsx
+│   ├── DeviceContext.tsx
+│   ├── DataContext.tsx
+│   └── NavigationContext.tsx
+├── 📂 constants/                      # Chứa các hằng số chung
+│   ├── Colors.ts
+│   ├── Fonts.ts
+│   ├── API.ts
+│   ├── Config.ts
+│   └── Routes.ts
+├── 📂 hooks/                          # Các hook tùy chỉnh
+│   ├── useColorScheme.ts
+│   ├── useDeviceControl.ts
+│   ├── useFetchData.ts
+│   ├── useAuth.ts
+│   └── useThemeColor.ts
+├── 📂 styles/                         # Chứa file style riêng biệt
+│   ├── components/
+│   │   ├── button.ts
+│   │   ├── card.ts
+│   │   ├── graph.ts
+│   │   └── navbar.ts
+│   ├── screens/
+│   │   ├── dataObservation.ts
+│   │   ├── deviceControl.ts
+│   │   ├── home.ts
+│   │   └── profile.ts
+│   ├── global.ts
+├── 📂 utils/                          # Chứa các hàm tiện ích
+│   ├── formatDate.ts
+│   ├── parseData.ts
+│   ├── validateInput.ts
+│   └── apiHelper.ts
+├── package.json
+├── README.md
+└── scripts/
+    └── reset-project.js
