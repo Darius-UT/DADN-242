@@ -3,11 +3,16 @@ import { TYPOGRAPHY } from "../constants/Fonts";
 import { COLORS } from  "../constants/Colors"
 
 const globalStyle = StyleSheet.create ({
-    padding: {
+    background: {
+        flex: 1,
+        position: "fixed",
+    },
+
+    mainPadding: {
         padding: 16
     },
 
-    TitleText: {
+    titleText: {
         fontSize: TYPOGRAPHY.titleFontSize,
         color: COLORS.textPrimary,
         fontWeight: 900

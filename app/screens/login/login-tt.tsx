@@ -1,106 +1,90 @@
-import { StyleSheet } from "react-native";
-import { COLORS } from "@/constants/Colors";
-import { TYPOGRAPHY } from "@/constants/Fonts"
-import globalStyle from "@/styles/global";
+import React from 'react';
+import {
+  View,
+  Text,
+  Image,
+  ImageBackground,
+  TextInput,
+  TouchableOpacity,
+  KeyboardAvoidingView,
+  TouchableWithoutFeedback,
+  Keyboard,
+  Platform
+} from 'react-native';
+import Login_TT_Style from '@/styles/screens/login/login-tt';
+import { useFonts } from "expo-font";
+import globalStyle from '@/styles/global';
+import { useNavigation } from 'expo-router';
 
-const Login_TT_Style = StyleSheet.create({
-    background: {
-        flex: 1,
-        position: "fixed",
-    },
 
-    container: {
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-    },
 
-    topContainer: {
-        width: "100%",
-        height: 150,
-        padding: globalStyle.padding.padding,
+const Login_TT = () => {
+  const [] = useFonts({
+    "TheNautigal-Bold": require("@/assets/fonts/The_Nautigal/TheNautigal-Bold.ttf"),
+    "Roboto-Bold": require("@/assets/fonts/Roboto/static/Roboto-Bold.ttf"),
+  });
 
-        display: "flex",
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
-    },
+  const navigation = useNavigation<any>();
 
-    bottomContainer: {
-        width: "100%",
-        height: "85%",
-        backgroundColor: "white",
-        borderRadius: 40,
-        padding: globalStyle.padding.padding,
+  return (
+    <ImageBackground source={require("@/assets/images/LogIn.png")} style={globalStyle.background}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} style={{ flex: 1 }}>
+        <KeyboardAvoidingView behavior="height" style={{ flex: 1 }}>
+          {/* Logo + tên app */}
+          <View style={Login_TT_Style.topContainer}>
+            <Image source={require("@/assets/images/Logo.png")} style={Login_TT_Style.logo} />
+            <Text style={Login_TT_Style.appName}>Bontanica</Text>
+          </View>
 
-        alignItems: "center",
-    },
+          {/* Form đăng nhập */}
+          <View style={Login_TT_Style.bottomContainer}>
+            {/* Chữ Đăng Nhập */}
+            <Text style={Login_TT_Style.loginText}>Đăng nhập</Text>
 
-    logo: {
-        width: 90,
-        height: 90,
-        marginTop: 30,
-    },
+            {/* Input điền thông tin */}
+            <View style={Login_TT_Style.inputContainer}>
+              <View>
+                <Text style={Login_TT_Style.inputText}>Tên đăng nhập</Text>
+                <TextInput
+                  style={Login_TT_Style.input}
+                  placeholder='Nhập tên đăng nhập'>
+                </TextInput>
+              </View>
 
-    appName: {
-        color: "white",
-        fontFamily: "TheNautigal-Bold",
-        fontSize: 80,
-        marginTop: 20,
-    },
+              <View>
+                <Text style={Login_TT_Style.inputText}>Mật khẩu</Text>
+                <TextInput
+                  style={Login_TT_Style.input}
+                  placeholder='Nhập mật khẩu'>
+                </TextInput>
+              </View>
 
-    loginText: {
-        color: COLORS.textPrimary,
-        fontFamily: "Roboto-Bold",
-        fontSize: TYPOGRAPHY.titleFontSize,
-        marginBottom: 40,
-    },
+              <TouchableOpacity style={Login_TT_Style.forgotPassword}>
+                <Text >Quên mật khẩu?</Text>
+              </TouchableOpacity>
+            </View>
 
-    inputContainer: {
-        width: "90%",
-        height: "auto",
-        gap: 25,
-    },
+            {/* Nút Đăng nhập */}
+            <TouchableOpacity 
+            style={Login_TT_Style.loginButton}
+            onPress={() => navigation.navigate("Main")}>
+              <Text style={Login_TT_Style.lastLoginText}>Đăng nhập</Text>
+            </TouchableOpacity>
 
-    inputText: {
-        color: COLORS.textPrimary,
-        fontFamily: "Roboto-Bold",
-        fontSize: 15,
-    },
+            {/* Liên hệ quản trị viên */}
+            <View style={Login_TT_Style.contact}>
+              <Text>Bạn chưa có tài khoản?</Text>
+              <TouchableOpacity>
+                <Text style={Login_TT_Style.inputText}>Liên hệ quản trị viên</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
 
-    input: {
-        borderBottomWidth: 1,
-        borderBottomColor: COLORS.primary,
-        paddingBottom: 1,
-    },
+    </ImageBackground>
 
-    forgotPassword: {
-        alignItems: "flex-end",
-    },
+  );
+};
 
-    loginButton: {
-        marginTop: 40,
-        paddingVertical: 13,
-        paddingHorizontal: 65,
-        backgroundColor: COLORS.secondary,
-        borderRadius: 100
-    },
-
-    lastLoginText: {
-        color: COLORS.white,
-        fontFamily: "Roboto-Bold",
-        fontSize: TYPOGRAPHY.subTitleFontSize,
-    },
-
-    contact: {
-        alignSelf: "flex-end",
-        alignItems: "flex-end",
-        marginTop: 220,
-        gap: 5,
-    }
-
-});
-
-export default Login_TT_Style;
+export default Login_TT;

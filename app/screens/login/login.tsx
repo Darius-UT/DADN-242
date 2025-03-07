@@ -2,7 +2,7 @@ import React from "react";
 import { View, Text, ImageBackground, TouchableOpacity, Image } from "react-native";
 import LoginStyle from "@/styles/screens/login/login";
 import { useFonts } from "expo-font";
-
+import { useNavigation } from "@react-navigation/native";
 
 
 export default function LoginScreen() {
@@ -11,6 +11,7 @@ export default function LoginScreen() {
     "Roboto-Bold": require("@/assets/fonts/Roboto/static/Roboto-Bold.ttf"),
   });
 
+  const navigation = useNavigation<any>();
 
   return (
     <View>
@@ -20,17 +21,17 @@ export default function LoginScreen() {
           <Image source={require("@/assets/images/Logo.png")} style={LoginStyle.logo} />
 
           {/* Tên app*/}
-          <Text style={LoginStyle.appName}>Botanica</Text>
+          <Text style={LoginStyle.appName}>Bontanica</Text>
 
           {/* Nút đăng nhập */}
-          <TouchableOpacity style={LoginStyle.loginButton}>
+          <TouchableOpacity 
+          style={LoginStyle.loginButton}
+          onPress={() => navigation.navigate("LoginTT")}>
             <Text style={LoginStyle.loginText}>ĐĂNG NHẬP</Text>
           </TouchableOpacity>
 
         </View>
       </ImageBackground>
-
-
     </View>
   );
 } 

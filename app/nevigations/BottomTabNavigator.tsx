@@ -1,28 +1,37 @@
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-// import HomeScreen from "@/app/screens/home";
-// import ProfileScreen from "@/app/screens/profile";
-// import DeviceControlScreen from "@/app/screens/device-control";
-// import { Ionicons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import HomeScreen from "../screens/home/home";
+import DataObservationScreen from "../screens/data-observation/data-observation";
+import DeviceControlScreen from "../screens/device-control/device-control";
+import ProfileScreen from "../screens/profile/profile";
+import { COLORS } from "@/constants/Colors";
 
-// const Tab = createBottomTabNavigator();
+const Tab = createBottomTabNavigator();
 
-// export default function BottomTabNavigator() {
-//     return (
-//         <Tab.Navigator
-//             screenOptions={({ route }) => ({
-//                 headerShown: false,
-//                 tabBarIcon: ({ color, size }) => {
-//                     let iconName: keyof typeof Ionicons.glyphMap = "home";
-//                     if (route.name === "Home") iconName = "home";
-//                     else if (route.name === "Profile") iconName = "person";
-//                     else if (route.name === "DeviceControl") iconName = "settings";
-//                     return <Ionicons name={iconName} size={size} color={color} />;
-//                 },
-//             })}
-//         >
-//             <Tab.Screen name="Home" component={HomeScreen} />
-//             <Tab.Screen name="DeviceControl" component={DeviceControlScreen} />
-//             <Tab.Screen name="Profile" component={ProfileScreen} />
-//         </Tab.Navigator>
-//     );
-// }
+export default function BottomTabNavigator() {
+  return (
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarActiveTintColor: COLORS.white,
+        tabBarInactiveTintColor: "rgba(255,255,255,0.6)",
+        tabBarStyle: { backgroundColor: COLORS.primary, height: 60 },
+        headerShown: false,
+        tabBarIcon: ({ focused, size }) => {
+            let iconName: keyof typeof Ionicons.glyphMap = "home-outline";
+  
+            if (route.name === "Home") iconName = focused ? "home" : "home-outline";
+            else if (route.name === "Data") iconName = focused ? "bar-chart" : "bar-chart-outline";
+            else if (route.name === "Control") iconName = focused ? "settings" : "settings-outline";
+            else if (route.name === "Profile") iconName = focused ? "person" : "person-outline";
+  
+            return <Ionicons name={iconName} size={size} color={COLORS.white} />;
+          },
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Data" component={DataObservationScreen} />
+      <Tab.Screen name="Control" component={DeviceControlScreen} />
+      <Tab.Screen name="Profile" component={ProfileScreen} />
+    </Tab.Navigator>
+  );
+}

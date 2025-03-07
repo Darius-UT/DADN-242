@@ -1,14 +1,9 @@
 import { StyleSheet } from "react-native";
-import { COLORS } from "@/constants/Colors";
-import { TYPOGRAPHY } from "@/constants/Fonts"
-import globalStyle from "@/styles/global";
+import { COLORS } from "../../../constants/Colors";
+import { TYPOGRAPHY } from "../../../constants/Fonts"
+import globalStyle from "../../../styles/global";
 
 const Login_TT_Style = StyleSheet.create({
-    background: {
-        flex: 1,
-        position: "fixed",
-    },
-
     container: {
         width: "100%",
         height: "100%",
@@ -20,7 +15,7 @@ const Login_TT_Style = StyleSheet.create({
     topContainer: {
         width: "100%",
         height: 150,
-        padding: globalStyle.padding.padding,
+        padding: globalStyle.mainPadding.padding,
 
         display: "flex",
         flexDirection: "row",
@@ -33,7 +28,7 @@ const Login_TT_Style = StyleSheet.create({
         height: "85%",
         backgroundColor: "white",
         borderRadius: 40,
-        padding: globalStyle.padding.padding,
+        padding: globalStyle.mainPadding.padding,
 
         alignItems: "center",
     },

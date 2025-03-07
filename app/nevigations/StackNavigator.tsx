@@ -1,16 +1,19 @@
-// import { createNativeStackNavigator } from "@react-navigation/native-stack";
-// import LoginScreen from "@/app/screens/login";
-// import BottomTabNavigator from "@/app/nevigations/BottomTabNavigator";
-// import NotFoundScreen from "@/app/screens/not-found";
+import { createStackNavigator } from "@react-navigation/stack";
+import BottomTabNavigator from "./BottomTabNavigator";
+import LoginScreen from "../screens/login/login";
+import LoginScreenTT from "../screens/login/login-tt";
 
-// const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 
-// export default function StackNavigator() {
-//     return (
-//         <Stack.Navigator screenOptions={{ headerShown: false }}>
-//             <Stack.Screen name="Login" component={LoginScreen} />
-//             <Stack.Screen name="Main" component={BottomTabNavigator} />
-//             <Stack.Screen name="NotFound" component={NotFoundScreen} />
-//         </Stack.Navigator>
-//     );
-// }
+export default function StackNavigator() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {/* Màn hình đăng nhập */}
+      <Stack.Screen name="Login" component={LoginScreen} />
+      <Stack.Screen name="LoginTT" component={LoginScreenTT} />
+      
+      {/* Màn hình chính */}
+      <Stack.Screen name="Main" component={BottomTabNavigator} />
+    </Stack.Navigator>
+  );
+}

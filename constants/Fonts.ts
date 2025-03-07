@@ -3,4 +3,5 @@ export const TYPOGRAPHY = {
     subTitleFontSize: 18,
     titleFontSize: 30,
     buttonFontSize: 15,
+    smallLogoFontSize: 45,
 };
