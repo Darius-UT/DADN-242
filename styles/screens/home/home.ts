@@ -18,6 +18,7 @@ export const GeneraValue = StyleSheet.create({
 
     dataCardContainer: {
         width: "48%",
+        maxWidth: 300,
         height: 130,
         backgroundColor: COLORS.lightSecondary,
         borderRadius: 10,
@@ -65,7 +66,8 @@ export const GeneraValue = StyleSheet.create({
         justifyContent: "space-around",
         paddingVertical: 10,
         paddingHorizontal: 5,
-        rowGap: 15
+        paddingBottom: 15,
+        rowGap: 10
     }
 });
 
@@ -75,7 +77,8 @@ export const LatelyNotification = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start",
-        gap: 10
+        gap: 10,
+        maxWidth: 600,
     },
 
     noti_level: {

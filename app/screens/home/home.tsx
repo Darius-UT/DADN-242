@@ -11,7 +11,7 @@ import Top_Header from '@/components/common/Top_Header';
 import { useFonts } from 'expo-font';
 import globalStyle from '@/styles/global';
 
-const GreenHouse_Name = "BÁCH KHOA";
+const GreenHouse_Name = "Bách khoa";
 const GreenHouse_Address = "268, Lý Thường Kiệt, P.14, Q.10, Tp Hồ Chí Minh";
 const GreenHouse_Status = "Đang kết nối";
 
@@ -71,7 +71,7 @@ const GeneralValue = () => {
       </View>
 
       <ScrollView
-        style={{ height: 300, }}
+        style={{ maxHeight: 300, }}
         contentContainerStyle={Home_Style.GeneraValue.scrollViewContainer}
         onStartShouldSetResponderCapture={() => true}
         nestedScrollEnabled={true} >
@@ -189,7 +189,7 @@ const Home = () => {
         nestedScrollEnabled={true} >
         {/* Tên nhà kính */}
         <View style={Home_Style.default.titleTextContainer}>
-          <Text style={Home_Style.default.titleText}>NHÀ KÍNH {GreenHouse_Name}</Text>
+          <Text style={Home_Style.default.titleText}>Nhà kính {GreenHouse_Name}</Text>
         </View>
 
         {/* Thông tin & Trạng thái nhà kính */}

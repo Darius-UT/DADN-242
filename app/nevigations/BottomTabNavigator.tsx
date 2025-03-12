@@ -15,6 +15,8 @@ export default function BottomTabNavigator() {
         tabBarActiveTintColor: COLORS.white,
         tabBarInactiveTintColor: "rgba(255,255,255,0.6)",
         tabBarStyle: { backgroundColor: COLORS.primary, height: 60 },
+        tabBarIndicatorStyle: { backgroundColor: "white" },
+        animationEnabled: true, // Bật hiệu ứng chuyển đổi
         headerShown: false,
         tabBarIcon: ({ focused, size }) => {
             let iconName: keyof typeof Ionicons.glyphMap = "home-outline";
@@ -34,4 +36,4 @@ export default function BottomTabNavigator() {
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );
-}
+};
