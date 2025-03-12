@@ -10,6 +10,8 @@ import * as Home_Style from '@/styles/screens/home/home';
 import Top_Header from '@/components/common/Top_Header';
 import { useFonts } from 'expo-font';
 import globalStyle from '@/styles/global';
+import { SeeAll_Button } from '@/components/common/Button';
+import { useNavigation } from 'expo-router';
 
 const GreenHouse_Name = "Bách khoa";
 const GreenHouse_Address = "268, Lý Thường Kiệt, P.14, Q.10, Tp Hồ Chí Minh";
@@ -85,7 +87,6 @@ const GeneralValue = () => {
 };
 
 
-
 // CẢNH BÁO GẦN ĐÂY
 const LatelyNotification = () => {
   const [] = useFonts({
@@ -108,6 +109,8 @@ const LatelyNotification = () => {
     );
   };
 
+  const navigation = useNavigation<any>();
+
 
   return (
     <View>
@@ -123,9 +126,7 @@ const LatelyNotification = () => {
         {notification("Độ ẩm đất khu B dưới 30% lúc 14:35 ngày 18/02/25", 3)}
       </ScrollView>
 
-      <TouchableOpacity style={Home_Style.LatelyNotification.expandButton}>
-        <Text style={Home_Style.LatelyNotification.buttonText}>Xem toàn bộ thông báo</Text>
-      </TouchableOpacity>
+      <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("RealTimeChart_Screen")} />
     </View>
   );
 };
@@ -174,11 +175,7 @@ const Home = () => {
   });
 
   return (
-    <ScrollView
-      stickyHeaderIndices={[0]}
-      keyboardShouldPersistTaps="handled"  // Cho phép chạm vào ScrollView con
-      nestedScrollEnabled={true}          // Cho phép ScrollView lồng nhau (Android)
-    >
+    <View>
       {/* Header */}
       <Top_Header></Top_Header>
 
@@ -214,7 +211,7 @@ const Home = () => {
         <DeviceState />
 
       </ScrollView>
-    </ScrollView>
+    </View>
   );
 };
 export default Home;

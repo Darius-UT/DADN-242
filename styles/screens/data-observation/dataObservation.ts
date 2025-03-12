@@ -6,8 +6,8 @@ import { StyleSheet } from "react-native";
 
 export const AreaSelectedList_Style = StyleSheet.create({
     selectListContainer: {
-        width: "100%",
         alignItems: "center",
+        justifyContent: "center",
     },
 
     selectListBox: {
@@ -21,15 +21,21 @@ export const AreaSelectedList_Style = StyleSheet.create({
     },
 
     selectListDropDownBox: {
-
+        position: "absolute",
+        zIndex: 10000,
+        top: "100%",
+        left: 0,
+        right: 0,
+        backgroundColor: COLORS.background,
+        borderColor: COLORS.background,
+        elevation: 5,
     }
 });
 
 export const AverageData_Style = StyleSheet.create({
     dataCard: {
         backgroundColor: COLORS.lightSecondary,
-        width: "49%", maxWidth: 300,
-        height: 100,
+        width: "95%", maxWidth: 350,
         borderRadius: 10,
         padding: 8,
         // Bóng đổ iOS
@@ -43,7 +49,6 @@ export const AverageData_Style = StyleSheet.create({
 
     cardName: {
         alignItems: "center",
-        
     },
 
     cardNameText: {
@@ -55,7 +60,8 @@ export const AverageData_Style = StyleSheet.create({
     content: {
         flexDirection: "row",
         alignItems: "center",
-        justifyContent: "space-evenly",
+        justifyContent: "space-between",
+        paddingHorizontal: 40,
     },
 
     mainContent: {
@@ -64,18 +70,18 @@ export const AverageData_Style = StyleSheet.create({
     },
 
     mainData: {
-        
+
     },
 
     mainDataText: {
         fontFamily: "Roboto-SemiBold",
-        fontSize: TYPOGRAPHY.titleFontSize + 10,
+        fontSize: TYPOGRAPHY.titleFontSize + 15,
     },
 
     subMainData: {
         alignSelf: "flex-end",
         bottom: 8,
-        gap: 4,
+        gap: 6,
     },
 
     subMainDataText: {
@@ -85,26 +91,60 @@ export const AverageData_Style = StyleSheet.create({
 
     subMainContent: {
         alignItems: "flex-end",
+        gap: 5,
     },
 
     subMainContentText: {
         fontSize: TYPOGRAPHY.baseFontSize,
     },
-    
+
     cardContainer: {
         width: "100%",
-        height: 210,
+        justifyContent: "space-evenly",
+        alignItems: "center",
+        display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
-        justifyContent: "space-between",
         rowGap: 10,
+        paddingTop: 10,
     },
 });
 
+export const RealTimeChart_Style = StyleSheet.create({
+    container: {
+        flexDirection: "row",
+        flexGrow: 1,
+    },
+});
+
+export const TrendingChart_Style = StyleSheet.create({
+    container: {
+        // height: 500,
+        paddingVertical: 10,
+        flexDirection: "column",
+        alignItems: "center",
+        rowGap: 8,
+    },
+    lineChartName: {
+        color: COLORS.textPrimary,
+        fontWeight: 500,
+    },
+});
+
+export const OverThresoldChart_Style = StyleSheet.create({
+
+});
+
 const DataObservation_Style = StyleSheet.create({
+    scrollView: {
+        padding: globalStyle.mainPadding.padding,
+        flexGrow: 1,
+        gap: 10,
+        paddingBottom: 100,
+    },
+
     headerContainer: {
         alignItems: "center",
-        paddingBottom: 10,
     },
 
     textHeader: {

@@ -1,3 +1,4 @@
+import React from 'react';
 import Svg, { Path, SvgUri } from 'react-native-svg';
 
 export const ArrowDown = () => (

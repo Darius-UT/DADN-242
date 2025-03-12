@@ -7,13 +7,14 @@ import { SPACING } from "@/constants/Spaces";
 
 export const GeneraValue = StyleSheet.create({
     subTitleTextContainer: {
-        paddingTop: 20
+        paddingTop: 10,
     },
 
     subTitleText: {
         fontFamily: "Roboto-SemiBold",
         fontSize: TYPOGRAPHY.subTitleFontSize,
         color: COLORS.textPrimary,
+        zIndex: 1000,
     },
 
     dataCardContainer: {
@@ -105,20 +106,6 @@ export const LatelyNotification = StyleSheet.create({
 
     scrollViewContainer: {
         gap: 10,
-    },
-
-    expandButton: {
-        paddingVertical: 10,
-        backgroundColor: COLORS.darkerBackground,
-        alignItems: "center",
-        justifyContent: "center",
-        marginTop: 10,
-        borderRadius: 8,
-    },
-
-    buttonText: {
-        // fontFamily: "Roboto-SemiBold",
-        fontSize: TYPOGRAPHY.buttonFontSize,
     },
 });
 
