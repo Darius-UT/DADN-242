@@ -93,7 +93,7 @@ const ProgressChartData = {
 };
 
 
-
+// Thành phần 1: Bảng lựa chọn khu vực
 const AreaSelectList = () => {
   const [selected, setSelected] = React.useState("");
 
@@ -121,7 +121,7 @@ const AreaSelectList = () => {
   );
 };
 
-
+// Thành phần 2: Giá trị trung bình
 const AverageData = () => {
   const [] = useFonts({
     "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
@@ -258,7 +258,7 @@ const AverageData = () => {
   );
 };
 
-
+// Thành phần 3: Biểu đồ thời gian thực
 const RealTimeChart = () => {
   const navigation = useNavigation<any>();
 
@@ -292,7 +292,7 @@ const RealTimeChart = () => {
   );
 };
 
-
+// Thành phần 4: Biểu đồ xu hướng
 const TrendingChart = () => {
   const scrollRef = useRef(null);
   const minValue = Math.min(...LightSensor_LineData1.map(d => d.value));
@@ -355,10 +355,7 @@ const TrendingChart = () => {
   );
 };
 
-
-
-
-
+// Thành phần 5: Biểu đồ tỷ lệ vượt ngưỡng
 const OverThresoldChart = ({ areaName }: { areaName: string }) => {
   return (
     <View>
@@ -408,7 +405,7 @@ const OverThresoldChart = ({ areaName }: { areaName: string }) => {
   );
 };
 
-
+// GIAO DIỆN CHÍNH - QUAN SÁT DỮ LIỆU
 const DataObservation = () => {
   const [] = useFonts({
     "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),

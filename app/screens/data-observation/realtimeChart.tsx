@@ -6,6 +6,7 @@ import {
     View,
     ScrollView,
     TouchableOpacity,
+    Dimensions,
 } from "react-native";
 import { useFonts } from "expo-font";
 import { useNavigation } from "expo-router";
@@ -14,7 +15,7 @@ import * as Home_Style from "@/styles/screens/home/home";
 import GaugeChart from "@/components/common/GaugeChart";
 import { COLORS } from "@/constants/Colors";
 import { BackArrow } from '@/components/ui/IconSymbol';
-
+const screenWidth = Dimensions.get("window").width;
 
 
 
@@ -50,7 +51,7 @@ const SoilMoistureSensor_GaugeData = [
     { id: "5", value: 12, min: 0, max: 100, unit: "%", name: "A-SM5" },
 ]
 
-
+// Thành phần 1: Cấu trúc các khu vực hiển thị biểu đồ
 const Sensor = (sensorType: string, sensorData: Array<{ id: string, value: number, min: number, max: number, unit: string, name: string }>) => {
     const [] = useFonts({
         "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
@@ -71,7 +72,7 @@ const Sensor = (sensorType: string, sensorData: Array<{ id: string, value: numbe
                 <Text style={Home_Style.GeneraValue.subTitleText}>{sensorType}</Text>
             </View>
             <ScrollView
-                style={{ maxHeight: 300, }}
+                style={{ maxHeight: 300}}
                 horizontal={true}
                 contentContainerStyle={RealtimeChartScreen_Style.Sensor_Style.scrollView}
                 nestedScrollEnabled={true}
@@ -92,6 +93,8 @@ const Sensor = (sensorType: string, sensorData: Array<{ id: string, value: numbe
     );
 };
 
+
+// GIAO DIỆN CHÍNH: Màn hình biểu đồ thời gian thực
 const RealTimeChart_Screen = () => {
     const navigation = useNavigation<any>();
     const [] = useFonts({

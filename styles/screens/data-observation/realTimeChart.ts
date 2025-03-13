@@ -33,7 +33,7 @@ const RealtimeChartScreen_Style = StyleSheet.create({
 
     backArrow: {
         position: "absolute",
-        left: 10,
+        left: 5,
     },
 
     headerContainer: {

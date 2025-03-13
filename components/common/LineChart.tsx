@@ -3,7 +3,6 @@ import { TYPOGRAPHY } from '@/constants/Fonts';
 import React, { useRef } from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import { LineChart } from 'react-native-gifted-charts';
-const screenWidth = Dimensions.get("window").width;
 
 
 

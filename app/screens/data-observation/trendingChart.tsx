@@ -263,7 +263,7 @@ const SoilMoistureSensor_LineData4 = [
 ];
 
 
-
+// DataSet
 const TemperatureDataSets = [
     { data: TemperatureSensor_LineData1, label: "A", color: "rgba(0, 133, 27, 0.8)", pointColor: "rgb(0, 51, 10)" },
     { data: TemperatureSensor_LineData2, label: "B", color: "rgba(17, 128, 188, 0.8)", pointColor: "rgb(0, 48, 73)" },
@@ -299,6 +299,7 @@ type SensorProps = {
     sensorType: string;
 };
 
+// Thành phần 1: Khu vực hiển thị biểu đồ xu hướng
 const Sensor: React.FC<SensorProps> = ({ dataSets, sensorType }) => {
     return (
         <View style={TrendingChartScreen_Style.default.areaContainer}>
@@ -314,6 +315,7 @@ const Sensor: React.FC<SensorProps> = ({ dataSets, sensorType }) => {
 };
 
 
+// GIAO DIỆN CHÍNH: MÀN HÌNH BIỂU ĐỒ XU HƯỚNG
 const TrendingChart_Screen = () => {
     const navigation = useNavigation<any>();
     const [] = useFonts({

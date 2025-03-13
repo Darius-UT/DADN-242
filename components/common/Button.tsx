@@ -18,8 +18,6 @@ export const SeeAll_Button: React.FC<{ name: string; onPressed: () => void }> = 
     );
 };
 
-
-
 const SellAll_Button_Style = StyleSheet.create({
     expandButton: {
         paddingVertical: 10,

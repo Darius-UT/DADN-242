@@ -164,11 +164,15 @@ const Home_Style = StyleSheet.create({
         padding: globalStyle.mainPadding.padding,
     },
 
+    mainContainer: {
+        gap: 10,
+        paddingBottom: 40,
+    },
+
     titleTextContainer: {
         display: "flex",
         flexDirection: "row",
         justifyContent: "center",
-        paddingBottom: 10
     },
 
     titleText: {

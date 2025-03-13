@@ -1,11 +1,8 @@
 import { COLORS } from "@/constants/Colors";
 import { TYPOGRAPHY } from "@/constants/Fonts";
-import React from "react";
 
 import {
     StyleSheet,
-    Text,
-    View,
 } from "react-native";
 
 export const Sensor_Style = StyleSheet.create({
