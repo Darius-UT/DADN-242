@@ -12,6 +12,7 @@ import { useFonts } from 'expo-font';
 import globalStyle from '@/styles/global';
 import { SeeAll_Button } from '@/components/common/Button';
 import { useNavigation } from 'expo-router';
+import { COLORS } from '@/constants/Colors';
 
 const GreenHouse_Name = "Bách khoa";
 const GreenHouse_Address = "268, Lý Thường Kiệt, P.14, Q.10, Tp Hồ Chí Minh";
@@ -126,7 +127,7 @@ const LatelyNotification = () => {
         {notification("Độ ẩm đất khu B dưới 30% lúc 14:35 ngày 18/02/25", 3)}
       </ScrollView>
 
-      <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("RealTimeChart_Screen")} />
+      <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("RealTime")} />
     </View>
   );
 };
@@ -151,7 +152,7 @@ const DeviceState = () => {
         <FlatList
           data={deviceState_data}
           keyExtractor={(item) => item.id}
-          renderItem={( {item} ) => (
+          renderItem={({ item }) => (
             <View style={Home_Style.deviceState.listRow}>
               <Text style={[Home_Style.deviceState.listCell]}>{item.deviceType}</Text>
               <Text style={[Home_Style.deviceState.listCell, Home_Style.deviceState.active]}>{item.active}</Text>
@@ -182,8 +183,11 @@ const Home = () => {
 
       {/* Main Content */}
       <ScrollView
-        style={{ padding: globalStyle.mainPadding.padding, }}
-        nestedScrollEnabled={true} >
+        style={{ padding: globalStyle.mainPadding.padding, backgroundColor: COLORS.white }}
+        nestedScrollEnabled={true}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+      >
         {/* Tên nhà kính */}
         <View style={Home_Style.default.titleTextContainer}>
           <Text style={Home_Style.default.titleText}>Nhà kính {GreenHouse_Name}</Text>

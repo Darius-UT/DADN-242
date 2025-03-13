@@ -120,7 +120,7 @@ export const RealTimeChart_Style = StyleSheet.create({
 export const TrendingChart_Style = StyleSheet.create({
     container: {
         // height: 500,
-        paddingVertical: 10,
+        paddingTop: 10,
         flexDirection: "column",
         alignItems: "center",
         rowGap: 8,
@@ -132,14 +132,29 @@ export const TrendingChart_Style = StyleSheet.create({
 });
 
 export const OverThresoldChart_Style = StyleSheet.create({
+    progressChartContainer: {
+       alignItems: "center",
+    },
 
+    noteContainer: {
+        flexDirection: "row",
+        flexWrap: "wrap",
+        justifyContent: "space-evenly",
+        padding: 8,
+    },
+
+    noteElementContainer: {
+        flexDirection: "row",
+        width: "50%",
+        alignItems: "center",
+    },
 });
 
 const DataObservation_Style = StyleSheet.create({
     scrollView: {
         padding: globalStyle.mainPadding.padding,
         flexGrow: 1,
-        gap: 10,
+        gap: 18,
         paddingBottom: 100,
     },
 

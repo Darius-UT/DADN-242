@@ -13,8 +13,15 @@ import * as Icon from "@/components/ui/IconSymbol";
 import * as Home_Style from '@/styles/screens/home/home';
 import GaugeChart from '@/components/common/GaugeChart';
 import { LineChart } from "react-native-gifted-charts";
+import { ProgressChart } from "react-native-chart-kit";
 import { SeeAll_Button } from '@/components/common/Button';
 import { useNavigation } from 'expo-router';
+import { COLORS } from '@/constants/Colors';
+import { Dimensions } from 'react-native';
+
+
+
+const screenWidth = Dimensions.get('window').width;
 
 
 
@@ -78,6 +85,12 @@ const LightSensor_LineData3 = [
   { value: 18, label: '10:00' },
   { value: 29, label: '11:00' },
 ];
+
+const ProgressChartData = {
+  labels: ["Cảm biến nhiệt độ", "Cảm biến ánh sáng", "Cảm biến độ ẩm", "Cảm biến độ ẩm đất"], // optional
+  data: [0.4, 0.6, 0.2, 0.8],
+  colors: ["rgba(5,7,181, 1)", "rgba(5,7,181, 0.8)", "rgba(5,7,181, 0.6)", "rgba(5,7,181, 0.4)"],
+};
 
 
 
@@ -260,7 +273,9 @@ const RealTimeChart = () => {
         contentContainerStyle={DataObservation_Style.RealTimeChart_Style.container}
         horizontal={true}
         onStartShouldSetResponderCapture={() => true}
-        nestedScrollEnabled={true}>
+        nestedScrollEnabled={true}
+        showsHorizontalScrollIndicator={false}
+      >
         {LightSensor_GaugeData.map((sensor) => (
           <GaugeChart
             key={sensor.id}
@@ -272,7 +287,7 @@ const RealTimeChart = () => {
         ))}
       </ScrollView>
 
-      <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("RealTimeChart_Screen")} />
+      <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("RealTime")} />
     </View>
   );
 };
@@ -332,20 +347,62 @@ const TrendingChart = () => {
           // Gán ref cho biểu đồ
           scrollRef={scrollRef}
         />
-        <Text style={DataObservation_Style.TrendingChart_Style.lineChartName}>Giá trị đo được của các cảm biến nhiệt độ khu A</Text>
+        <Text style={DataObservation_Style.TrendingChart_Style.lineChartName}>Giá trị đo được của các cảm biến nhiệt độ giữa các khu.</Text>
       </View>
 
-      <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("RealTimeChart_Screen")} />
+      <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("Trending")} />
     </View>
   );
 };
 
 
-const OverThresoldChart = () => {
+
+
+
+const OverThresoldChart = ({ areaName }: { areaName: string }) => {
   return (
     <View>
       <View style={Home_Style.GeneraValue.subTitleTextContainer}>
         <Text style={Home_Style.GeneraValue.subTitleText}>Biểu đồ tỷ lệ vượt ngưỡng</Text>
+      </View>
+
+      <View style={DataObservation_Style.OverThresoldChart_Style.progressChartContainer}>
+        <ProgressChart
+          width={screenWidth - 10}
+          height={255}
+          data={ProgressChartData}
+          strokeWidth={18}
+          radius={40}
+          chartConfig={{
+            backgroundColor: COLORS.white,
+            backgroundGradientFrom: COLORS.white,
+            backgroundGradientTo: COLORS.white,
+            color: (opacity = 1) => `rgba(5, 20, 120, ${opacity})`,
+            style: {
+              borderRadius: 16,
+            },
+          }}
+          hideLegend={true}
+        />
+        <View style={DataObservation_Style.OverThresoldChart_Style.noteContainer}>
+          {ProgressChartData.labels.map((label, index) => (
+            <View key={index} style={DataObservation_Style.OverThresoldChart_Style.noteElementContainer}>
+              <View
+                style={{
+                  width: 35,
+                  height: 15,
+                  backgroundColor: ProgressChartData.colors[index], // Lấy màu tương ứng
+                  marginRight: 5,
+                  borderRadius: 10,
+                }}
+              />
+              <Text>{label}</Text>
+            </View>
+          ))}
+        </View>
+        <View>
+          <Text style={DataObservation_Style.TrendingChart_Style.lineChartName}>Tỷ lệ số lần vượt ngưỡng của các cảm biến {areaName}.</Text>
+        </View>
       </View>
     </View>
   );
@@ -365,9 +422,12 @@ const DataObservation = () => {
 
       {/* Data Observation */}
       <ScrollView
+        style={{ backgroundColor: COLORS.white }}
         contentContainerStyle={DataObservation_Style.default.scrollView}
         keyboardShouldPersistTaps="handled"
         nestedScrollEnabled={true}
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
       >
         {/* Header */}
         <View style={DataObservation_Style.default.headerContainer}>
@@ -387,7 +447,7 @@ const DataObservation = () => {
         <TrendingChart />
 
         {/* Mục: Biểu đồ tỷ lệ vượt ngưỡng */}
-        <OverThresoldChart />
+        <OverThresoldChart areaName={"khu A"} />
       </ScrollView>
 
     </View>

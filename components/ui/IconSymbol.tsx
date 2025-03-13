@@ -25,4 +25,10 @@ export const Degree = () => (
     <Svg width="8" height="8" viewBox="0 0 8 8" fill="none">
         <Path d="M8 4C8 6.20914 6.20914 8 4 8C1.79086 8 0 6.20914 0 4C0 1.79086 1.79086 0 4 0C6.20914 0 8 1.79086 8 4ZM1.85423 4C1.85423 5.18508 2.81492 6.14577 4 6.14577C5.18508 6.14577 6.14577 5.18508 6.14577 4C6.14577 2.81492 5.18508 1.85423 4 1.85423C2.81492 1.85423 1.85423 2.81492 1.85423 4Z" fill="black" />
     </Svg>
-)
+);
+
+export const BackArrow = () => (
+    <Svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+        <Path d="M18.75 24.9L10.6 16.75C9.63755 15.7875 9.63755 14.2125 10.6 13.25L18.75 5.09998" stroke="#31511E" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
+    </Svg>
+);

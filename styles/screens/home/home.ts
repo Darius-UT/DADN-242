@@ -7,7 +7,7 @@ import { SPACING } from "@/constants/Spaces";
 
 export const GeneraValue = StyleSheet.create({
     subTitleTextContainer: {
-        paddingTop: 10,
+        // paddingTop: 10,
     },
 
     subTitleText: {
