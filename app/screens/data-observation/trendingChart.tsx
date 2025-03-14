@@ -300,7 +300,7 @@ type SensorProps = {
 };
 
 // Thành phần 1: Khu vực hiển thị biểu đồ xu hướng
-const Sensor: React.FC<SensorProps> = ({ dataSets, sensorType }) => {
+const Sensor: React.FC<SensorProps> = React.memo(({ dataSets, sensorType }) => {
     return (
         <View style={TrendingChartScreen_Style.default.areaContainer}>
             <View style={TrendingChartScreen_Style.default.subHeaderContainer}>
@@ -312,7 +312,7 @@ const Sensor: React.FC<SensorProps> = ({ dataSets, sensorType }) => {
             </View>
         </View>
     );
-};
+});
 
 
 // GIAO DIỆN CHÍNH: MÀN HÌNH BIỂU ĐỒ XU HƯỚNG

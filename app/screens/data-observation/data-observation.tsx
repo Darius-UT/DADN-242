@@ -18,6 +18,9 @@ import { SeeAll_Button } from '@/components/common/Button';
 import { useNavigation } from 'expo-router';
 import { COLORS } from '@/constants/Colors';
 import { Dimensions } from 'react-native';
+import LineChartTemplate from '@/components/common/LineChart';
+import * as TrendingChartScreen_Style from '@/styles/screens/data-observation/trendingChart';
+import Home from '../home/home';
 
 
 
@@ -33,7 +36,7 @@ const DataSelectList = [
   { id: "4", value: "Khu vực D" },
 ];
 
-const LightSensor_GaugeData = [
+const TemperatureSensor_GaugeData = [
   { id: "1", value: 36, min: 0, max: 100, name: "Cảm biến nhiệt độ A-T1" },
   { id: "2", value: 20, min: 0, max: 100, name: "Cảm biến nhiệt độ A-T2" },
   { id: "3", value: 40, min: 0, max: 100, name: "Cảm biến nhiệt độ A-T3" },
@@ -41,7 +44,7 @@ const LightSensor_GaugeData = [
   { id: "5", value: 12, min: 0, max: 100, name: "Cảm biến nhiệt độ A-T5" },
 ]
 
-const LightSensor_LineData1 = [
+const TemperatureSensor_LineData1 = [
   { value: 15, label: '00:00' },
   { value: 20, label: '01:00' },
   { value: 24, label: '02:00' },
@@ -56,7 +59,7 @@ const LightSensor_LineData1 = [
   { value: 32, label: '11:00' },
 ];
 
-const LightSensor_LineData2 = [
+const TemperatureSensor_LineData2 = [
   { value: 20, label: '00:00' },
   { value: 24, label: '01:00' },
   { value: 25, label: '02:00' },
@@ -71,7 +74,7 @@ const LightSensor_LineData2 = [
   { value: 19, label: '11:00' },
 ];
 
-const LightSensor_LineData3 = [
+const TemperatureSensor_LineData3 = [
   { value: 30, label: '00:00' },
   { value: 34, label: '01:00' },
   { value: 35, label: '02:00' },
@@ -84,6 +87,12 @@ const LightSensor_LineData3 = [
   { value: 20, label: '09:00' },
   { value: 18, label: '10:00' },
   { value: 29, label: '11:00' },
+];
+// DataSet
+const TemperatureDataSets = [
+  { data: TemperatureSensor_LineData1, label: "A", color: "rgba(0, 133, 27, 0.8)", pointColor: "rgb(0, 51, 10)" },
+  { data: TemperatureSensor_LineData2, label: "B", color: "rgba(17, 128, 188, 0.8)", pointColor: "rgb(0, 48, 73)" },
+  { data: TemperatureSensor_LineData3, label: "C", color: "rgba(255, 99, 71, 0.8)", pointColor: "rgb(139, 0, 0)" },
 ];
 
 const ProgressChartData = {
@@ -276,7 +285,7 @@ const RealTimeChart = () => {
         nestedScrollEnabled={true}
         showsHorizontalScrollIndicator={false}
       >
-        {LightSensor_GaugeData.map((sensor) => (
+        {TemperatureSensor_GaugeData.map((sensor) => (
           <GaugeChart
             key={sensor.id}
             value={sensor.value}
@@ -294,9 +303,6 @@ const RealTimeChart = () => {
 
 // Thành phần 4: Biểu đồ xu hướng
 const TrendingChart = () => {
-  const scrollRef = useRef(null);
-  const minValue = Math.min(...LightSensor_LineData1.map(d => d.value));
-  const maxValue = Math.max(...LightSensor_LineData1.map(d => d.value));
   const navigation = useNavigation<any>();
 
   return (
@@ -305,49 +311,8 @@ const TrendingChart = () => {
         <Text style={Home_Style.GeneraValue.subTitleText}>Biểu đồ xu hướng</Text>
       </View>
 
-      <View style={DataObservation_Style.TrendingChart_Style.container}>
-        <LineChart
-          data={LightSensor_LineData1}
-          data2={LightSensor_LineData2}
-          data3={LightSensor_LineData3}
-
-          thickness={3}
-          height={300}
-          spacing={50}
-
-          // Màu sắc đường
-          color1="rgba(0, 133, 27, 0.8)"
-          color2="rgba(17, 128, 188, 0.8)"
-
-          // Điểm dữ liệu
-          dataPointsColor1="rgb(0, 51, 10)"
-          dataPointsColor2="rgb(0, 48, 73)"
-          dataPointsRadius={4}
-
-          // Hiệu ứng gradient
-          curved
-
-          // Lưới và focus
-          showVerticalLines
-          verticalLinesColor="rgba(0, 0, 0, 0.1)"
-          xAxisColor="rgba(0, 0, 0, 0.2)"
-          yAxisColor="rgba(0, 0, 0, 0.2)"
-          focusEnabled
-
-          adjustToWidth
-          yAxisOffset={minValue - 10}
-          yAxisLabelTexts={[
-            (minValue - 5).toString(),
-            minValue.toString(),
-            ((minValue + maxValue) / 2).toString(),
-            maxValue.toString(),
-            (maxValue + 5).toString()
-          ]}
-
-          // Gán ref cho biểu đồ
-          scrollRef={scrollRef}
-        />
-        <Text style={DataObservation_Style.TrendingChart_Style.lineChartName}>Giá trị đo được của các cảm biến nhiệt độ giữa các khu.</Text>
+      <View style={DataObservation_Style.TrendingChart_Style.chartContainer}>
+        <LineChartTemplate dataSets={TemperatureDataSets} chartTitle={"Giá trị của cảm biến nhiệt độ giữa các khu vực."} />
       </View>
 
       <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("Trending")} />

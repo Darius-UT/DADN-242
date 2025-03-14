@@ -102,6 +102,7 @@ const LineChartTemplate_Style = StyleSheet.create({
         alignItems: "center",
         rowGap: 8,
     },
+    
     lineChartName: {
         color: COLORS.textPrimary,
         fontWeight: 500,

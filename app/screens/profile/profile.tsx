@@ -7,6 +7,7 @@ import { COLORS } from "@/constants/Colors";
 import { TYPOGRAPHY } from "@/constants/Fonts";
 import { Asset, ImageLibraryOptions, launchImageLibrary } from "react-native-image-picker";
 import { useNavigation } from "expo-router";
+import Top_Header from "@/components/common/Top_Header";
 
 
 
@@ -128,7 +129,11 @@ const ProfileScreen = () => {
   return (
     <ScrollView
       style={ProfileScreen_Style.default.container}
+      showsVerticalScrollIndicator={false}
     >
+      {/* Header */}
+      <Top_Header></Top_Header>
+
       {/* Ảnh nền */}
       <TouchableOpacity style={ProfileScreen_Style.default.backgroundImageContainer} onPress={() => selectImage(setBackgroundImage)}>
         <ImageBackground source={{ uri: backgroundImage }} style={ProfileScreen_Style.default.backgroundImageContainer} resizeMode="cover">
@@ -155,6 +160,7 @@ const ProfileScreen = () => {
         <Setting />
       </View>
 
+      {/* Nút đăng xuất */}
       <View style={ProfileScreen_Style.default.logoutButtonContainer}>
         <TouchableOpacity style={ProfileScreen_Style.default.logoutButton} onPress={() => navigation.navigate("Login")}>
           <Text style={ProfileScreen_Style.default.logoutButtonText}>Đăng xuất</Text>

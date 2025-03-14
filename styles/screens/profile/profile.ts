@@ -3,7 +3,11 @@ import { TYPOGRAPHY } from "@/constants/Fonts";
 import globalStyle from "@/styles/global";
 import { Dimensions, StyleSheet } from "react-native";
 
+
+
 const { width } = Dimensions.get("window");
+
+
 
 export const PersonalInformation_Style = StyleSheet.create({
     rowElement: {
@@ -21,7 +25,7 @@ export const PersonalInformation_Style = StyleSheet.create({
     },
 
     container: {
-        marginTop: 25,
+        marginTop: 10,
     },
 
     titleText: {
@@ -78,8 +82,8 @@ const ProfileScreen_Style = StyleSheet.create({
         zIndex: 100,
         overflow: "hidden",
         position: "absolute",
-        top: 135,
-        left: 16,
+        top: 195,
+        left: 10,
 
         borderWidth: 4,
         borderColor: COLORS.white,
@@ -91,7 +95,7 @@ const ProfileScreen_Style = StyleSheet.create({
     },
 
     userInformationContainer: {
-        marginLeft: 155,
+        marginLeft: 150,
         marginTop: 5,
         gap: 5,
     },
@@ -112,7 +116,7 @@ const ProfileScreen_Style = StyleSheet.create({
 
     logoutButtonContainer: {
         alignItems: "center",
-        marginTop: 100
+        marginTop: 35,
     },
 
     logoutButton: {

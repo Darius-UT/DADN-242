@@ -11,8 +11,9 @@ const Tab = createBottomTabNavigator();
 
 export default function BottomTabNavigator() {
   return (
-    <Tab.Navigator
+    <Tab.Navigator 
       screenOptions={({ route }) => ({
+        lazy: true,
         tabBarActiveTintColor: COLORS.white,
         tabBarInactiveTintColor: "rgba(255,255,255,0.6)",
         tabBarStyle: { backgroundColor: COLORS.primary, height: 60 },

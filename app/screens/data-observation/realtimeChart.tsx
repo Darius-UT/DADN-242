@@ -52,7 +52,7 @@ const SoilMoistureSensor_GaugeData = [
 ]
 
 // Thành phần 1: Cấu trúc các khu vực hiển thị biểu đồ
-const Sensor = (sensorType: string, sensorData: Array<{ id: string, value: number, min: number, max: number, unit: string, name: string }>) => {
+const Sensor = React.memo(({ sensorType, sensorData }: { sensorType: string, sensorData: Array<{ id: string, value: number, min: number, max: number, unit: string, name: string }> }) => {
     const [] = useFonts({
         "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
         "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
@@ -91,7 +91,7 @@ const Sensor = (sensorType: string, sensorData: Array<{ id: string, value: numbe
             </ScrollView>
         </View>
     );
-};
+});
 
 
 // GIAO DIỆN CHÍNH: Màn hình biểu đồ thời gian thực
@@ -122,10 +122,10 @@ const RealTimeChart_Screen = () => {
 
             <SearchBar />
 
-            {Sensor("Cảm biến nhiệt độ", TemperatureSensor_GaugeData)}
-            {Sensor("Cảm biến ánh sáng", LightSensor_GaugeData)}
-            {Sensor("Cảm biến độ ẩm", MoistureSensor_GaugeData)}
-            {Sensor("Cảm biến độ ẩm đất", SoilMoistureSensor_GaugeData)}
+            <Sensor sensorType="Cảm biến nhiệt độ" sensorData={TemperatureSensor_GaugeData} />
+            <Sensor sensorType="Cảm biến ánh sáng" sensorData={LightSensor_GaugeData} />
+            <Sensor sensorType="Cảm biến độ ẩm" sensorData={MoistureSensor_GaugeData} />
+            <Sensor sensorType="Cảm biến độ ẩm đất" sensorData={SoilMoistureSensor_GaugeData} />
 
         </ScrollView>
     );

@@ -125,6 +125,11 @@ export const TrendingChart_Style = StyleSheet.create({
         alignItems: "center",
         rowGap: 8,
     },
+
+    chartContainer: {
+        
+    },
+
     lineChartName: {
         color: COLORS.textPrimary,
         fontWeight: 500,
