@@ -12,16 +12,12 @@ import { useFonts } from 'expo-font';
 import * as Icon from "@/components/ui/IconSymbol";
 import * as Home_Style from '@/styles/screens/home/home';
 import GaugeChart from '@/components/common/GaugeChart';
-import { LineChart } from "react-native-gifted-charts";
 import { ProgressChart } from "react-native-chart-kit";
 import { SeeAll_Button } from '@/components/common/Button';
 import { useNavigation } from 'expo-router';
 import { COLORS } from '@/constants/Colors';
 import { Dimensions } from 'react-native';
 import LineChartTemplate from '@/components/common/LineChart';
-import * as TrendingChartScreen_Style from '@/styles/screens/data-observation/trendingChart';
-import Home from '../home/home';
-
 
 
 const screenWidth = Dimensions.get('window').width;

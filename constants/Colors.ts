@@ -11,6 +11,7 @@ export const COLORS = {
     Red: "#C50000",
     Green: "#31511E",
     Yello: "#FFD045",
+    Gray: "#818181",
 
     background: "#EBEBEB",
     darkerBackground: "#D9D9D9",
