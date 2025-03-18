@@ -36,12 +36,12 @@ export const UserBoxTemplate_Style = StyleSheet.create ({
     userNameText: {
         fontFamily: "Roboto-SemiBold",
         fontSize: TYPOGRAPHY.subTitleFontSize - 2,
-        maxWidth: 170,
+        maxWidth: 140,
     },
     fullNameText: {
         fontFamily: "Roboto",
         fontSize: TYPOGRAPHY.subTitleFontSize - 4,
-        maxWidth: 170,
+        maxWidth: 140,
     },
     
     editButtonContainer: {
@@ -59,7 +59,9 @@ export const UserBoxTemplate_Style = StyleSheet.create ({
 
     threeDotsContainer: {
         position: "absolute",
-        right: "2%",
+        right: 0,
+        paddingVertical: 5,
+        paddingHorizontal: 3,
     },
     threeDotsText: {
         
@@ -73,9 +75,6 @@ const EngineerUserList_Style = StyleSheet.create ({
         padding: globalStyle.mainPadding.padding,
         flexDirection: "column",
         alignItems: "center",
-        // rowGap: 5,
-        // backgroundColor: COLORS.background,
-        flex: 1,
     },
 });
 

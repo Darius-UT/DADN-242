@@ -12,7 +12,6 @@ export default function RootNavigator() {
         <Stack.Navigator screenOptions={{ headerShown: false }}>
             {/* Màn hình đăng nhập */}
             <Stack.Screen name="Login" component={LoginScreen} />
-            <Stack.Screen name="LoginTT" component={LoginScreenTT} />
 
             {/* Vai trò User */}
             <Stack.Screen name="UserNavigator" component={StackNavigator} />

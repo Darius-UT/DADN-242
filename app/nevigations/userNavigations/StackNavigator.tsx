@@ -3,6 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import BottomTabNavigator from "./BottomTabNavigator";
 import RealTimeChart_Screen from "@/app/screens/data-observation/realtimeChart";
 import TrendingChart_Screen from '@/app/screens/data-observation/trendingChart';
+import Login_TT from '@/app/screens/login/login-tt';
 
 const Stack = createStackNavigator();
 
@@ -14,6 +15,9 @@ const screenOptions = {
 export default function StackNavigator() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
+      {/* Màn hình đăng nhập */}
+      <Stack.Screen name="LoginTT" component={Login_TT} />
+
       {/* Màn hình chính */}
       <Stack.Screen name="Main" component={BottomTabNavigator} />
 

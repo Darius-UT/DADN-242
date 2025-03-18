@@ -67,7 +67,7 @@ const Login_TT = () => {
             {/* Nút Đăng nhập */}
             <TouchableOpacity 
             style={Login_TT_Style.loginButton}
-            onPress={() => navigation.navigate("UserNavigator")}>
+            onPress={() => navigation.navigate("Main")}>
               <Text style={Login_TT_Style.lastLoginText}>Đăng nhập</Text>
             </TouchableOpacity>
 
