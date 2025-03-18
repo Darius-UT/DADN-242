@@ -82,7 +82,7 @@ const ProfileScreen_Style = StyleSheet.create({
         zIndex: 100,
         overflow: "hidden",
         position: "absolute",
-        top: 195,
+        top: 210,
         left: 10,
 
         borderWidth: 4,
@@ -97,12 +97,17 @@ const ProfileScreen_Style = StyleSheet.create({
     userInformationContainer: {
         marginLeft: 150,
         marginTop: 5,
-        gap: 5,
+        gap: 3,
     },
 
     userNameText: {
         fontFamily: "Roboto-SemiBold",
         fontSize: TYPOGRAPHY.subTitleFontSize + 2,
+    },
+
+    fullNameText: {
+        fontFamily: "Roboto-SemiBold",
+        fontSize: TYPOGRAPHY.subTitleFontSize - 2,
     },
 
     userRoleText: {

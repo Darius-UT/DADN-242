@@ -1,10 +1,10 @@
 import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import HomeScreen from "../screens/home/home";
-import DataObservationScreen from "../screens/data-observation/data-observation";
-import DeviceControlScreen from "../screens/device-control/device-control";
-import ProfileScreen from "../screens/profile/profile";
+import HomeScreen from "@/app/screens/home/home";
+import DataObservationScreen from "@/app/screens/data-observation/data-observation";
+import DeviceControlScreen from "@/app/screens/device-control/device-control";
+import ProfileScreen from "@/app/screens/profile/profile";
 import { COLORS } from "@/constants/Colors";
 
 const Tab = createBottomTabNavigator();

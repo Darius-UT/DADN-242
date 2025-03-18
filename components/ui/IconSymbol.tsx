@@ -1,3 +1,4 @@
+import { Entypo } from '@expo/vector-icons';
 import React from 'react';
 import Svg, { Path, SvgUri } from 'react-native-svg';
 
@@ -32,3 +33,7 @@ export const BackArrow = () => (
         <Path d="M18.75 24.9L10.6 16.75C9.63755 15.7875 9.63755 14.2125 10.6 13.25L18.75 5.09998" stroke="#31511E" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
     </Svg>
 );
+
+export const Three_Dot_Vertical = () => {
+    <Entypo name="dots-three-vertical" size={24} color="black" />
+}

@@ -1,6 +1,6 @@
 import React from "react";
-import StackNavigator from "./nevigations/StackNavigator";
+import RootNavigator from "./nevigations/rootNavigations";
 
 export default function Layout() {
-  return <StackNavigator />;
+  return <RootNavigator />;
 }

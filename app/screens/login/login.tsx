@@ -27,7 +27,13 @@ export default function LoginScreen() {
           <TouchableOpacity 
           style={LoginStyle.loginButton}
           onPress={() => navigation.navigate("LoginTT")}>
-            <Text style={LoginStyle.loginText}>ĐĂNG NHẬP</Text>
+            <Text style={LoginStyle.loginText}>KỸ THUẬT VIÊN</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+          style={[LoginStyle.loginButton, { marginTop: 20 }]}
+          onPress={() => navigation.navigate("AdminNavigator")}>
+            <Text style={LoginStyle.loginText}>QUẢN TRỊ VIÊN</Text>
           </TouchableOpacity>
 
         </View>

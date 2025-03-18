@@ -27,15 +27,18 @@ const LoginStyle = StyleSheet.create({
         color: "white",
         fontFamily: "TheNautigal-Bold",
         fontSize: 100,
-        marginBottom: 200,
+        marginBottom: 190,
     },
 
     loginButton: {
         backgroundColor: COLORS.white,
         paddingVertical: 13,
-        paddingHorizontal: 65,
+        width: 200,
         borderRadius: 100,
         flexShrink: 0,
+
+        justifyContent: "center",
+        alignItems: "center",
 
         shadowColor: "black",
         shadowOffset: { width: 0, height: 5 },

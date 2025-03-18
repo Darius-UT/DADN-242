@@ -11,7 +11,8 @@ import Top_Header from "@/components/common/Top_Header";
 
 
 
-const UserName = "Nguyễn Lê Hoàng Phúc";
+const FullName = "Nguyễn Lê Hoàng Phúc";
+const UserName = "Huangfu_1204"
 const UserRole = "Kỹ thuật viên";
 const UserDOB = "12/12/2004";
 const UserEmail = "Phuc.nguyenlehoang707@hcmut.edu.vn";
@@ -151,7 +152,8 @@ const ProfileScreen = () => {
       {/* Tên người dùng + Vai trò */}
       <View style={ProfileScreen_Style.default.userInformationContainer}>
         <Text style={ProfileScreen_Style.default.userNameText}>{UserName}</Text>
-        <Text style={ProfileScreen_Style.default.userRoleText}>{UserRole}</Text>
+        <Text style={ProfileScreen_Style.default.fullNameText}>{"(" + FullName + ")"}</Text>
+        <Text style={[ProfileScreen_Style.default.userRoleText, { marginTop: 5 }]}>{UserRole}</Text>
       </View>
 
       {/* Chi tiết trang */}
