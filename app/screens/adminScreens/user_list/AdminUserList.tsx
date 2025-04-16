@@ -1,6 +1,6 @@
 import { useFonts } from "expo-font";
 import React from "react";
-import { View, Text, Image, TouchableOpacity, ScrollView } from "react-native";
+import { ScrollView } from "react-native";
 import { UserBoxTemplate } from "./EngineerUserList";
 import * as AdminUserList_Style from "@/styles/screens/adminScreens/user_list/adminUserList";
 

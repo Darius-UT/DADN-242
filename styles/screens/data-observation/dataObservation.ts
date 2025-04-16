@@ -165,6 +165,7 @@ const DataObservation_Style = StyleSheet.create({
 
     headerContainer: {
         alignItems: "center",
+        marginBottom: 20,
     },
 
     textHeader: {

@@ -128,48 +128,53 @@ const ProfileScreen = () => {
   };
 
   return (
-    <ScrollView
-      style={ProfileScreen_Style.default.container}
-      showsVerticalScrollIndicator={false}
-    >
+    <View>
       {/* Header */}
       <Top_Header></Top_Header>
 
-      {/* Ảnh nền */}
-      <TouchableOpacity style={ProfileScreen_Style.default.backgroundImageContainer} onPress={() => selectImage(setBackgroundImage)}>
-        <ImageBackground source={{ uri: backgroundImage }} style={ProfileScreen_Style.default.backgroundImageContainer} resizeMode="cover">
-          <Text style={{ color: "white", textAlign: "center", marginTop: 145, fontWeight: "bold" }}>
-            Chọn ảnh nền
-          </Text>
-        </ImageBackground>
-      </TouchableOpacity>
-
-      {/* Ảnh đại diện */}
-      <TouchableOpacity style={ProfileScreen_Style.default.avatarImageContainer} onPress={() => selectImage(setAvatarImage)}>
-        <Image source={{ uri: avatarImage }} style={ProfileScreen_Style.default.avatarImage} />
-      </TouchableOpacity>
-
-      {/* Tên người dùng + Vai trò */}
-      <View style={ProfileScreen_Style.default.userInformationContainer}>
-        <Text style={ProfileScreen_Style.default.userNameText}>{UserName}</Text>
-        <Text style={ProfileScreen_Style.default.fullNameText}>{"(" + FullName + ")"}</Text>
-        <Text style={[ProfileScreen_Style.default.userRoleText, { marginTop: 5 }]}>{UserRole}</Text>
-      </View>
-
-      {/* Chi tiết trang */}
-      <View style={ProfileScreen_Style.default.mainContentContainer}>
-        <PersonalInformation />
-        <Setting />
-      </View>
-
-      {/* Nút đăng xuất */}
-      <View style={ProfileScreen_Style.default.logoutButtonContainer}>
-        <TouchableOpacity style={ProfileScreen_Style.default.logoutButton} onPress={() => navigation.navigate("Login")}>
-          <Text style={ProfileScreen_Style.default.logoutButtonText}>Đăng xuất</Text>
+      {/* Nội dung trang */}
+      <ScrollView
+        style={{ }}
+        contentContainerStyle={ProfileScreen_Style.default.container}
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Ảnh nền */}
+        <TouchableOpacity style={ProfileScreen_Style.default.backgroundImageContainer} onPress={() => selectImage(setBackgroundImage)}>
+          <ImageBackground source={{ uri: backgroundImage }} style={ProfileScreen_Style.default.backgroundImageContainer} resizeMode="cover">
+            <Text style={{ color: "white", textAlign: "center", marginTop: 145, fontWeight: "bold" }}>
+              Chọn ảnh nền
+            </Text>
+          </ImageBackground>
         </TouchableOpacity>
-      </View>
 
-    </ScrollView>
+        {/* Ảnh đại diện */}
+        <TouchableOpacity style={ProfileScreen_Style.default.avatarImageContainer} onPress={() => selectImage(setAvatarImage)}>
+          <Image source={{ uri: avatarImage }} style={ProfileScreen_Style.default.avatarImage} />
+        </TouchableOpacity>
+
+        {/* Tên người dùng + Vai trò */}
+        <View style={ProfileScreen_Style.default.userInformationContainer}>
+          <Text style={ProfileScreen_Style.default.userNameText}>{UserName}</Text>
+          <Text style={ProfileScreen_Style.default.fullNameText}>{"(" + FullName + ")"}</Text>
+          <Text style={[ProfileScreen_Style.default.userRoleText, { marginTop: 5 }]}>{UserRole}</Text>
+        </View>
+
+        {/* Chi tiết trang */}
+        <View style={ProfileScreen_Style.default.mainContentContainer}>
+          <PersonalInformation />
+          <Setting />
+        </View>
+
+        {/* Nút đăng xuất */}
+        <View style={ProfileScreen_Style.default.logoutButtonContainer}>
+          <TouchableOpacity style={ProfileScreen_Style.default.logoutButton} onPress={() => navigation.navigate("Login")}>
+            <Text style={ProfileScreen_Style.default.logoutButtonText}>Đăng xuất</Text>
+          </TouchableOpacity>
+        </View>
+
+      </ScrollView>
+    </View>
+
   );
 };
 

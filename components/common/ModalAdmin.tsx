@@ -19,7 +19,8 @@ const ModalTemplate: React.FC<ModalTemplateProps> = ({ isVisible, setModalVisibl
         animationIn="zoomInUp" 
         animationOut="zoomOutDown" 
         backdropOpacity={0.6} 
-        onBackdropPress={() => setModalVisible(false)}>
+        // onBackdropPress={() => setModalVisible(false)}
+        >
             <ScrollView contentContainerStyle={ModalTemplate_Style.modalContainer}>
                 <View style={UserAddScreen_Style.default.textInputContainer}>
                     <TextInputTemplate

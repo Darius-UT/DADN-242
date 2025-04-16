@@ -1,7 +1,7 @@
 import Top_Header from "@/components/common/Top_Header";
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
-import { ScrollView, TextInput } from "react-native-gesture-handler";
+import { ScrollView } from "react-native-gesture-handler";
 import * as UserAddScreen_Style from "@/styles/screens/adminScreens/user_add/userAdd";
 import { useFonts } from "expo-font";
 import TextInputTemplate from "@/components/common/TextInput";

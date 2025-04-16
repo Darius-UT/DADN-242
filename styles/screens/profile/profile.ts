@@ -59,8 +59,8 @@ export const Setting_Style = StyleSheet.create({
 
 const ProfileScreen_Style = StyleSheet.create({
     container: {
-        // padding: globalStyle.mainPadding.padding,
         backgroundColor: COLORS.white,
+        paddingBottom: 100
     },
 
     backgroundImageContainer: {
@@ -82,7 +82,7 @@ const ProfileScreen_Style = StyleSheet.create({
         zIndex: 100,
         overflow: "hidden",
         position: "absolute",
-        top: 210,
+        top: 145,
         left: 10,
 
         borderWidth: 4,
@@ -115,13 +115,13 @@ const ProfileScreen_Style = StyleSheet.create({
     },
 
     mainContentContainer: {
-        marginTop: 25,
+        marginTop: 8,
         padding: globalStyle.mainPadding.padding,
     },
 
     logoutButtonContainer: {
         alignItems: "center",
-        marginTop: 35,
+        marginTop: 15,
     },
 
     logoutButton: {

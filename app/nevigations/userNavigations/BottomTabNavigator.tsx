@@ -3,9 +3,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import HomeScreen from "@/app/screens/home/home";
 import DataObservationScreen from "@/app/screens/data-observation/data-observation";
-import DeviceControlScreen from "@/app/screens/device-control/device-control";
+import DeviceStackNavigator from "./deviceStackNavigator";
 import ProfileScreen from "@/app/screens/profile/profile";
 import { COLORS } from "@/constants/Colors";
+
 
 const Tab = createBottomTabNavigator();
 
@@ -34,7 +35,7 @@ export default function BottomTabNavigator() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Data" component={DataObservationScreen} />
-      <Tab.Screen name="Control" component={DeviceControlScreen} />
+      <Tab.Screen name="Control" component={DeviceStackNavigator} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>
   );

@@ -36,7 +36,7 @@ export const UserBoxTemplate_Style = StyleSheet.create ({
     userNameText: {
         fontFamily: "Roboto-SemiBold",
         fontSize: TYPOGRAPHY.subTitleFontSize - 2,
-        maxWidth: 140,
+        maxWidth: 200,
     },
     fullNameText: {
         fontFamily: "Roboto",
