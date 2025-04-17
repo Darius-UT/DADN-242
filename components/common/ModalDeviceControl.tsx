@@ -8,13 +8,18 @@ import {
     Text,
     TouchableOpacity,
     Alert,
+    KeyboardAvoidingView,
+    Platform,
+    TouchableWithoutFeedback,
+    Keyboard,
 } from "react-native";
 import Modal from "react-native-modal";
 import ToggleSwitch from "toggle-switch-react-native";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Add_Circle, Cross_Symbol } from "../ui/IconSymbol";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
+import ModalAddRule from "./ModalAddRule";
 
 
 
@@ -65,15 +70,15 @@ const ManualModeArea: React.FC<{ selectedTab: 'manual' | 'auto'; setSelectedTab:
                     <Text style={{ margin: 5 }}>Chuyển sang chế độ tự động vào: </Text>
 
                     <View style={ManualModeArea_Style.commonContainer}>
-                        <View style={ManualModeArea_Style.dateContainer}>
+                        <TouchableOpacity style={ManualModeArea_Style.dateContainer} onPress={() => setDateVisible(true)}>
                             <Text style={ManualModeArea_Style.subTitleText}>Chọn ngày</Text>
-                            <Text style={ManualModeArea_Style.dateText} onPress={() => setDateVisible(true)}>{myDate.toLocaleDateString()}</Text>
-                        </View>
+                            <Text style={ManualModeArea_Style.dateText} >{myDate.toLocaleDateString()}</Text>
+                        </TouchableOpacity>
 
-                        <View style={ManualModeArea_Style.dateContainer}>
-                            <Text style={ManualModeArea_Style.subTitleText}>Chọn ngày</Text>
-                            <Text style={ManualModeArea_Style.dateText} onPress={() => setTimeVisible(true)}>{myTime.toLocaleTimeString()}</Text>
-                        </View>
+                        <TouchableOpacity style={ManualModeArea_Style.dateContainer} onPress={() => setTimeVisible(true)}>
+                            <Text style={ManualModeArea_Style.subTitleText}>Chọn giờ</Text>
+                            <Text style={ManualModeArea_Style.dateText} >{myTime.toLocaleTimeString()}</Text>
+                        </TouchableOpacity>
                     </View>
 
                     <DateTimePickerModal
@@ -114,6 +119,8 @@ const AutoModeArea:
         deviceName,
         deviceSymbol
     }) => {
+
+        const [add_rule_modal_visible, set_add_rule_modal_visible] = useState<boolean>(false);
 
         const AlertWhenDeleteRule = () => {
             Alert.alert(
@@ -172,9 +179,10 @@ const AutoModeArea:
                     <View>
                         <View style={AutoModeArea_Style.headerContainer}>
                             <Text style={AutoModeArea_Style.titleText}>Các quy tắc đã thiết lập</Text>
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={() => set_add_rule_modal_visible(true)}>
                                 <Add_Circle />
                             </TouchableOpacity>
+
                         </View>
 
                         <FlatList
@@ -187,6 +195,9 @@ const AutoModeArea:
                             style={{ height: 300 }}
                         />
                     </View>}
+
+                {/* Modal thêm quy tắc */}
+                <ModalAddRule visible={add_rule_modal_visible} setVisible={set_add_rule_modal_visible} rule_index={(Rule_Data.length + 1).toLocaleString()} deviceName={deviceName}/>
             </View>
         )
     };
@@ -205,7 +216,7 @@ const DeviceControlModal: React.FC<deviceControlProps> = ({ visible, setVisible,
     const AlertWhenCancel = () => {
         Alert.alert(
             "Cảnh báo",
-            "Thay đổi chưa được lưu. \nBạn có muốn trở lại?",
+            "Thay đổi chưa được lưu. \nBạn có muốn ở lại?",
             [
                 { text: "Thoát", style: "default", onPress: () => setVisible(false) },
                 { text: "Trở lại", style: "cancel" },
