@@ -12,9 +12,8 @@ import { SafeAreaView, SectionList, } from "react-native";
 import { COLORS } from "@/constants/Colors";
 import { ArrowUp, ArrowDown } from "@/components/ui/IconSymbol";
 import DeviceControlModal from "@/components/common/ModalDeviceControl";
+import { useRoute } from "@react-navigation/native";
 
-
-const AreaName = "A";
 
 const deviceData = [
     {
@@ -55,6 +54,11 @@ const deviceData = [
 
 
 const DeviceAreaScreen = () => {
+    // tham số
+    const myRoute = useRoute<any>();
+    const { areaName } = myRoute.params;
+
+
     const navigation = useNavigation<any>();
 
     // UseState cho việc thu-phóng danh sách các nhóm thiết bị
@@ -86,6 +90,7 @@ const DeviceAreaScreen = () => {
         });
     }
 
+
     // Font chữ
     const [] = useFonts({
         "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
@@ -105,7 +110,7 @@ const DeviceAreaScreen = () => {
                 <TouchableOpacity style={DeviceAreaScreen_Style.default.backArrow} onPress={() => navigation.goBack()}>
                     <BackArrow></BackArrow>
                 </TouchableOpacity>
-                <Text style={DeviceAreaScreen_Style.default.headerText}>Thiết bị khu {AreaName}</Text>
+                <Text style={DeviceAreaScreen_Style.default.headerText}>Thiết bị khu {areaName}</Text>
 
 
                 {/* Danh sách các thiết bị theo nhóm */}

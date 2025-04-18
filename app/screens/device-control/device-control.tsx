@@ -5,7 +5,18 @@ import { useFonts } from 'expo-font';
 import { useNavigation } from 'expo-router';
 import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { FlatList, ScrollView } from 'react-native-gesture-handler';
+
+
+// Dữ liệu số lượng + tên các khu vực
+const AreaName_Data = [
+  { key: "1", value: "A" },
+  { key: "2", value: "B" },
+  { key: "3", value: "C" },
+  { key: "4", value: "D" },
+]
+
+
 
 
 interface CardAreaTemplateProps {
@@ -22,7 +33,7 @@ const CardAreaTemplate: React.FC<CardAreaTemplateProps> = ({ nameArea = "A" }) =
   const navigation = useNavigation<any>();
 
   return (
-    <TouchableOpacity style={DeviceControlScreen_Style.CardAreaTemplate_Style.mainContainer} onPress={() => navigation.navigate("DeviceArea")}>
+    <TouchableOpacity style={DeviceControlScreen_Style.CardAreaTemplate_Style.mainContainer} onPress={() => navigation.navigate("DeviceArea", {areaName: nameArea})}>
       <View style={DeviceControlScreen_Style.CardAreaTemplate_Style.areaTextContainer}>
         <Text style={DeviceControlScreen_Style.CardAreaTemplate_Style.areaText}>Khu {nameArea}</Text>
       </View>
@@ -41,20 +52,25 @@ const DeviceControlScreen = () => {
       {/* Top_Header */}
       <Top_Header></Top_Header>
 
-      <ScrollView
-        contentContainerStyle={DeviceControlScreen_Style.default.overallContainer}>
+      <View
+        style={DeviceControlScreen_Style.default.overallContainer}>
         {/* Header */}
         <View style={DataObservation_Style.default.headerContainer}>
           <Text style={DataObservation_Style.default.textHeader}>Điều khiển thiết bị</Text>
         </View>
 
-        <View style={DeviceControlScreen_Style.default.cardContainer}>
+        {/* <View style={DeviceControlScreen_Style.default.cardContainer}>
           <CardAreaTemplate nameArea='A' />
           <CardAreaTemplate nameArea='B' />
           <CardAreaTemplate nameArea='C' />
           <CardAreaTemplate nameArea='D' />
+        </View> */}
+        <View style={DeviceControlScreen_Style.default.cardContainer}>
+          {AreaName_Data.map((item, index) => (
+            <CardAreaTemplate key={item.key} nameArea={item.value} />
+          ))}
         </View>
-      </ScrollView>
+      </View>
     </View>
   );
 };

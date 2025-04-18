@@ -97,7 +97,7 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
             isVisible={visible}
             animationIn={"slideInRight"}
             animationOut={"slideOutRight"}
-            backdropOpacity={0.5}
+            backdropOpacity={0}
             onBackdropPress={() => setVisible(false)}
             avoidKeyboard={true}
         >
@@ -108,7 +108,7 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
                 </View>
 
                 {/* Nếu */}
-                <View style={[ModalAddRule_Style.subContainer, { zIndex: 100 }]}>
+                <View style={[ModalAddRule_Style.subContainer, { zIndex: 999 }]}>
                     <Text style={ModalAddRule_Style.subText}>Nếu:</Text>
                     <SelectList
                         data={Sensor_SelectList_Data_Official}
@@ -307,10 +307,8 @@ const ModalAddRule_Style = StyleSheet.create({
 
         paddingHorizontal: 5,
         borderRadius: 8,
-        backgroundColor: COLORS.lightSecondary,
-        borderWidth: 1,
-        borderColor: COLORS.white,
-        elevation: 3,
+        backgroundColor: COLORS.background,
+        elevation: 5
     },
 
     textInputContainer: {

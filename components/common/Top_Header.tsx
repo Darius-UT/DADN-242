@@ -1,5 +1,5 @@
 import { TouchableOpacity } from "react-native";
-import { View, Image, StyleSheet} from "react-native";
+import { View, Image, StyleSheet } from "react-native";
 import Small_Logo from "./Small_Logo";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AddCircle from '@/assets/icons/topHeader/add_circle.svg';
@@ -7,15 +7,26 @@ import Notification from '@/assets/icons/topHeader/notification.svg';
 import Search from '@/assets/icons/topHeader/search-normal.svg';
 import { SPACING } from "@/constants/Spaces";
 import React from "react";
+import { useNavigation } from "expo-router";
 
 const Top_Header = () => {
+    const myNavigation = useNavigation<any>();
+
     return (
         <SafeAreaView style={Top_Header_Style.container}>
             <Small_Logo></Small_Logo>
             <View style={Top_Header_Style.utilities}>
-                <AddCircle/>
-                <Notification/>
-                <Search/>
+                <TouchableOpacity>
+                    <AddCircle />
+                </TouchableOpacity>
+
+                <TouchableOpacity onPress={() => myNavigation.navigate("Notification")}>
+                    <Notification />
+                </TouchableOpacity>
+
+                <TouchableOpacity>
+                    <Search />
+                </TouchableOpacity>
             </View>
         </SafeAreaView>
     );

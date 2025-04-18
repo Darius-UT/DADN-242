@@ -5,7 +5,6 @@ import { COLORS } from  "../constants/Colors"
 const globalStyle = StyleSheet.create ({
     background: {
         flex: 1,
-        position: "fixed",
     },
 
     mainPadding: {

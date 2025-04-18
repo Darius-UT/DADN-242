@@ -4,6 +4,7 @@ import BottomTabNavigator from "./BottomTabNavigator";
 import RealTimeChart_Screen from "@/app/screens/data-observation/realtimeChart";
 import TrendingChart_Screen from '@/app/screens/data-observation/trendingChart';
 import Login_TT from '@/app/screens/login/login-tt';
+import Notification_Screen from '@/app/screens/notification/notification';
 
 const Stack = createStackNavigator();
 
@@ -26,6 +27,9 @@ export default function StackNavigator() {
 
       {/* Màn hình Biểu đồ Trending */}
       <Stack.Screen name="Trending" component={TrendingChart_Screen} />
+
+      {/* Màn hình Thông báo */}
+      <Stack.Screen name="Notification" component={Notification_Screen} />
     </Stack.Navigator>
   );
 }

@@ -398,7 +398,7 @@ const DeviceControlModal_Style = StyleSheet.create({
 
     buttonModeContainer: {
         width: "100%",
-        paddingVertical: "3.5%",
+        paddingVertical: 11,
         backgroundColor: COLORS.secondary,
         justifyContent: "center",
         alignItems: "center",
