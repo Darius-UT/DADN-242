@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -15,6 +15,8 @@ import Login_TT_Style from '@/styles/screens/login/login-tt';
 import { useFonts } from "expo-font";
 import globalStyle from '@/styles/global';
 import { useNavigation } from 'expo-router';
+import { getUser, loginAPI } from '@/services/api.service';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
@@ -24,7 +26,52 @@ const Login_TT = () => {
     "Roboto-Bold": require("@/assets/fonts/Roboto/static/Roboto-Bold.ttf"),
   });
 
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
   const navigation = useNavigation<any>();
+  const handleLogin = async () => {
+    try {
+      const response:any = await loginAPI({ username, password });
+      console.log(response);
+      if (response && response.statusCode == 200) {
+        await AsyncStorage.setItem('accessToken', response.data.token);
+        await AsyncStorage.setItem('userId', response.data.id);
+        await AsyncStorage.setItem('username', response.data.username);
+        // const token = await AsyncStorage.getItem('accessToken');
+        // alert(token);
+        navigation.navigate("Main")
+      }
+      else {
+        alert("Sai tên đăng nhập hoặc mật khẩu!");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  const checkLogin = async () => {
+    try {
+      const token = await AsyncStorage.getItem('accessToken');
+      const response:any = await getUser(token);
+      if (response && response.statusCode == 200) {
+        navigation.navigate("Main")
+      }
+      else {
+        alert("Phiên đăng nhập đã hết hạn hoặc không hợp lệ!");
+        await AsyncStorage.removeItem('accessToken');
+        await AsyncStorage.removeItem('userId');
+        await AsyncStorage.removeItem('username');
+      }
+    }
+    catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    checkLogin();
+
+  }, []);
 
   return (
     <ImageBackground source={require("@/assets/images/LogIn.png")} style={globalStyle.background}>
@@ -47,7 +94,10 @@ const Login_TT = () => {
                 <Text style={Login_TT_Style.inputText}>Tên đăng nhập</Text>
                 <TextInput
                   style={Login_TT_Style.input}
-                  placeholder='Nhập tên đăng nhập'>
+                  placeholder='Nhập tên đăng nhập'
+                  value={username}
+                  onChangeText={(text) => setUsername(text)}
+                  >
                 </TextInput>
               </View>
 
@@ -55,7 +105,11 @@ const Login_TT = () => {
                 <Text style={Login_TT_Style.inputText}>Mật khẩu</Text>
                 <TextInput
                   style={Login_TT_Style.input}
-                  placeholder='Nhập mật khẩu'>
+                  placeholder='Nhập mật khẩu'
+                  value={password}
+                  onChangeText={(text) => setPassword(text)}
+                  secureTextEntry={true}
+                  >
                 </TextInput>
               </View>
 
@@ -67,7 +121,7 @@ const Login_TT = () => {
             {/* Nút Đăng nhập */}
             <TouchableOpacity
               style={Login_TT_Style.loginButton}
-              onPress={() => navigation.navigate("Main")}>
+              onPress={() => handleLogin()}>
               <Text style={Login_TT_Style.lastLoginText}>Đăng nhập</Text>
             </TouchableOpacity>
 
