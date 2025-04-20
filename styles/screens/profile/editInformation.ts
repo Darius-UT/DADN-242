@@ -16,12 +16,12 @@ export const Template_Input_Information = StyleSheet.create({
         fontSize: TYPOGRAPHY.subTitleFontSize - 3,
         color: COLORS.textPrimary,
         opacity: 0.6,
-        marginLeft: 4,
+        marginLeft: 1,
     },
 
     inputContainer: {
-        marginTop: -8,
-        marginBottom: -8,
+        marginTop: -2,
+        marginBottom: -2,
         fontSize: TYPOGRAPHY.baseFontSize + 4,
         width: "90%",
     },

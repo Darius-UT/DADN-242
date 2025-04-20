@@ -321,6 +321,7 @@ const ModalAddRule_Style = StyleSheet.create({
         borderColor: COLORS.primary,
         borderRadius: 8,
         paddingHorizontal: 12,
+        paddingVertical: 10,
     },
 
     valueContainer: {
