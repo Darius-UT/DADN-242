@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { View, Text, Image, ImageBackground, ScrollView, SafeAreaView, Switch, TouchableOpacity } from "react-native";
+import { View, Text, Image, ImageBackground, ScrollView, SafeAreaView, Switch, TouchableOpacity, Alert } from "react-native";
 import ToggleSwitch from 'toggle-switch-react-native';
 import * as ProfileScreen_Style from "@/styles/screens/profile/profile";
 import { useFonts } from "expo-font";
 import { COLORS } from "@/constants/Colors";
 import { TYPOGRAPHY } from "@/constants/Fonts";
-import { Asset, ImageLibraryOptions, launchImageLibrary } from "react-native-image-picker";
+import * as ImagePicker from 'expo-image-picker';
 import { useNavigation } from "expo-router";
 import Top_Header from "@/components/common/Top_Header";
 
@@ -19,6 +19,8 @@ const UserEmail = "Phuc.nguyenlehoang707@hcmut.edu.vn";
 const UserPhoneNumber = "0766909533";
 const UserJoinedDate = "14/03/2025";
 
+const defaultAvatarImage = "https://thuvienanime.net/wp-content/uploads/2024/11/tu-ba-ba-tu-au-u-thuvienanime-9.jpg";
+const defaultBackgroundImage = "https://thuvienanime.net/wp-content/uploads/2024/10/muc-than-ky-thuvienanime-1.jpg";
 
 
 // Thành phần 1: Thông tin cá nhân
@@ -41,7 +43,8 @@ const PersonalInformation = () => {
     <View style={ProfileScreen_Style.PersonalInformation_Style.container}>
       <Text style={ProfileScreen_Style.PersonalInformation_Style.titleText}>Hồ sơ cá nhân</Text>
       <View style={ProfileScreen_Style.PersonalInformation_Style.contentContainer}>
-        {RowInformation("Họ và tên", `${UserName}`)}
+        {RowInformation("Tên", `${FullName}`)}
+        {RowInformation("Tên người dùng", `${UserName}`)}
         {RowInformation("Ngày sinh", `${UserDOB}`)}
         {RowInformation("Email", `${UserEmail}`)}
         {RowInformation("Số điện thoại", `${UserPhoneNumber}`)}
@@ -109,23 +112,48 @@ const ProfileScreen = () => {
 
   const navigation = useNavigation<any>();
 
-  const [backgroundImage, setBackgroundImage] = useState<string>("https://thuvienanime.net/wp-content/uploads/2024/10/muc-than-ky-thuvienanime-1.jpg");
-  const [avatarImage, setAvatarImage] = useState<string>("https://thuvienanime.net/wp-content/uploads/2024/11/tu-ba-ba-tu-au-u-thuvienanime-9.jpg");
+  const [backgroundImage, setBackgroundImage] = useState<string>(defaultBackgroundImage);
+  const [avatarImage, setAvatarImage] = useState<string>(defaultAvatarImage);
 
-  // Hàm chọn ảnh
-  const selectImage = (setImage: React.Dispatch<React.SetStateAction<string>>) => {
-    const options: ImageLibraryOptions = {
-      mediaType: "photo",
+  // Hàm chọn ảnh đại diện
+  const PickAvatarImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
       quality: 1,
-    };
-
-    launchImageLibrary(options, (response) => {
-      if (response.assets && response.assets.length > 0) {
-        const selectedImage: Asset = response.assets[0]; // Lấy ảnh đầu tiên
-        setImage(selectedImage.uri || ""); // Đảm bảo uri không bị undefined
-      }
     });
-  };
+
+    if (!result.canceled) {
+      setAvatarImage(result.assets[0].uri); // Cập nhật ảnh
+    };
+  }
+
+  // Hàm chọn ảnh bìa
+  const PickBackgroundImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setBackgroundImage(result.assets[0].uri); // Cập nhật ảnh
+    };
+  }
+
+  const AlertWhenLogOut = () => {
+    Alert.alert(
+      "Xác nhận",
+      "Bạn có chắc chắn muốn đăng xuất?",
+      [
+        { text: "Hủy", style: "cancel" },
+        { text: "Đăng xuất", style: "destructive", onPress: () => navigation.navigate("Login") }
+      ],
+      { cancelable: true }
+    )
+  }
 
   return (
     <View>
@@ -134,12 +162,12 @@ const ProfileScreen = () => {
 
       {/* Nội dung trang */}
       <ScrollView
-        style={{ }}
+        style={{}}
         contentContainerStyle={ProfileScreen_Style.default.container}
         showsVerticalScrollIndicator={false}
       >
         {/* Ảnh nền */}
-        <TouchableOpacity style={ProfileScreen_Style.default.backgroundImageContainer} onPress={() => selectImage(setBackgroundImage)}>
+        <TouchableOpacity style={ProfileScreen_Style.default.backgroundImageContainer} onPress={() => PickBackgroundImage()}>
           <ImageBackground source={{ uri: backgroundImage }} style={ProfileScreen_Style.default.backgroundImageContainer} resizeMode="cover">
             <Text style={{ color: "white", textAlign: "center", marginTop: 145, fontWeight: "bold" }}>
               Chọn ảnh nền
@@ -148,7 +176,7 @@ const ProfileScreen = () => {
         </TouchableOpacity>
 
         {/* Ảnh đại diện */}
-        <TouchableOpacity style={ProfileScreen_Style.default.avatarImageContainer} onPress={() => selectImage(setAvatarImage)}>
+        <TouchableOpacity style={ProfileScreen_Style.default.avatarImageContainer} onPress={() => PickAvatarImage()}>
           <Image source={{ uri: avatarImage }} style={ProfileScreen_Style.default.avatarImage} />
         </TouchableOpacity>
 
@@ -159,6 +187,14 @@ const ProfileScreen = () => {
           <Text style={[ProfileScreen_Style.default.userRoleText, { marginTop: 5 }]}>{UserRole}</Text>
         </View>
 
+        {/* Nút chỉnh sửa hồ sơ */}
+        <View style={ProfileScreen_Style.default.editButtonView}>
+          <TouchableOpacity style={ProfileScreen_Style.default.editButtonContainer} onPress={() => navigation.navigate("EditInformation")}>
+            <Text style={ProfileScreen_Style.default.editButtonText}>Chỉnh sửa trang cá nhân</Text>
+          </TouchableOpacity>
+        </View>
+
+
         {/* Chi tiết trang */}
         <View style={ProfileScreen_Style.default.mainContentContainer}>
           <PersonalInformation />
@@ -167,7 +203,7 @@ const ProfileScreen = () => {
 
         {/* Nút đăng xuất */}
         <View style={ProfileScreen_Style.default.logoutButtonContainer}>
-          <TouchableOpacity style={ProfileScreen_Style.default.logoutButton} onPress={() => navigation.navigate("Login")}>
+          <TouchableOpacity style={ProfileScreen_Style.default.logoutButton} onPress={AlertWhenLogOut}>
             <Text style={ProfileScreen_Style.default.logoutButtonText}>Đăng xuất</Text>
           </TouchableOpacity>
         </View>

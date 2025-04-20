@@ -183,7 +183,7 @@ const Home = () => {
 
       {/* Main Content */}
       <ScrollView
-        style={{ padding: globalStyle.mainPadding.padding, backgroundColor: COLORS.white }}
+        style={{ padding: globalStyle.mainPadding.padding, backgroundColor: COLORS.background }}
         contentContainerStyle={Home_Style.default.mainContainer}
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}

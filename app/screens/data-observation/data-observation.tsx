@@ -380,7 +380,7 @@ const DataObservation = () => {
 
       {/* Data Observation */}
       <ScrollView
-        style={{ backgroundColor: COLORS.white }}
+        style={{ backgroundColor: COLORS.background }}
         contentContainerStyle={DataObservation_Style.default.scrollView}
         keyboardShouldPersistTaps="handled"
         nestedScrollEnabled={true}

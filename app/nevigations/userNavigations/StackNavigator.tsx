@@ -5,6 +5,7 @@ import RealTimeChart_Screen from "@/app/screens/data-observation/realtimeChart";
 import TrendingChart_Screen from '@/app/screens/data-observation/trendingChart';
 import Login_TT from '@/app/screens/login/login-tt';
 import Notification_Screen from '@/app/screens/notification/notification';
+import EditInformation_Screen from '@/app/screens/profile/editInfomation';
 
 const Stack = createStackNavigator();
 
@@ -30,6 +31,9 @@ export default function StackNavigator() {
 
       {/* Màn hình Thông báo */}
       <Stack.Screen name="Notification" component={Notification_Screen} />
+
+      {/* Màn hình Chỉnh sửa thông tin người dùng */}
+      <Stack.Screen name="EditInformation" component={EditInformation_Screen} />
     </Stack.Navigator>
   );
 }

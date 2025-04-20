@@ -59,7 +59,7 @@ export const Setting_Style = StyleSheet.create({
 
 const ProfileScreen_Style = StyleSheet.create({
     container: {
-        backgroundColor: COLORS.white,
+        backgroundColor: COLORS.background,
         paddingBottom: 100
     },
 
@@ -115,9 +115,31 @@ const ProfileScreen_Style = StyleSheet.create({
     },
 
     mainContentContainer: {
-        marginTop: 8,
         padding: globalStyle.mainPadding.padding,
     },
+
+    editButtonView: {
+        alignItems: "center",
+    },
+
+    editButtonContainer: {
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 20,
+
+        width: "90%",
+        paddingVertical: 5,
+        borderWidth: 1,
+        borderColor: COLORS.primary,
+        borderRadius: 5,
+    },
+
+    editButtonText: {
+        fontFamily: "Roboto-SemiBold",
+        fontSize: TYPOGRAPHY.buttonFontSize,
+        color: COLORS.textPrimary,
+    },
+
 
     logoutButtonContainer: {
         alignItems: "center",
