@@ -27,5 +27,15 @@ const resetPassword  = (data: any) => {
     return axios.put(URL_BACKEND, data)
 }
 
+const updateUser = (token:any, id:any, data: any) => {
+    const URL_BACKEND = `api/v1/user/updateUser/${id}`
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.put(URL_BACKEND, data, config)
+}
 
-export {loginAPI, getUser, sendOTP, resetPassword};
+
+export {loginAPI, getUser, sendOTP, resetPassword, updateUser};

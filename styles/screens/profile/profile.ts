@@ -20,6 +20,12 @@ export const PersonalInformation_Style = StyleSheet.create({
         fontFamily: "Roboto-SemiBold",
     },
 
+    indexContentTextEdit: {
+        width: "60%",
+        borderBottomWidth: 1,
+        borderBottomColor: COLORS.primary,
+        paddingBottom: 1,
+    },
     indexContentText: {
         width: "60%",
     },
