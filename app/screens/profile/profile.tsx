@@ -14,7 +14,6 @@ import Top_Header from "@/components/common/Top_Header";
 const FullName = "Nguyễn Lê Hoàng Phúc";
 const UserName = "Huangfu_1204"
 const UserRole = "Kỹ thuật viên";
-const UserDOB = "12/12/2004";
 const UserEmail = "Phuc.nguyenlehoang707@hcmut.edu.vn";
 const UserPhoneNumber = "0766909533";
 const UserJoinedDate = "14/03/2025";
@@ -45,7 +44,6 @@ const PersonalInformation = () => {
       <View style={ProfileScreen_Style.PersonalInformation_Style.contentContainer}>
         {RowInformation("Tên", `${FullName}`)}
         {RowInformation("Tên người dùng", `${UserName}`)}
-        {RowInformation("Ngày sinh", `${UserDOB}`)}
         {RowInformation("Email", `${UserEmail}`)}
         {RowInformation("Số điện thoại", `${UserPhoneNumber}`)}
         {RowInformation("Chức vụ", `${UserRole}`)}

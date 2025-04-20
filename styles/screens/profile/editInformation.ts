@@ -23,6 +23,7 @@ export const Template_Input_Information = StyleSheet.create({
         marginTop: -8,
         marginBottom: -8,
         fontSize: TYPOGRAPHY.baseFontSize + 4,
+        width: "90%",
     },
 
     editButton: {

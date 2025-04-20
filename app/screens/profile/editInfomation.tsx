@@ -13,7 +13,6 @@ import { useNavigation } from "expo-router";
 
 const FullName = "Nguyễn Lê Hoàng Phúc";
 const UserName = "Huangfu_1204"
-const UserDOB = "12/12/2004";
 const UserEmail = "Phuc.nguyenlehoang707@hcmut.edu.vn";
 const UserPhoneNumber = "0766909533";
 
@@ -82,7 +81,6 @@ const EditInformation_Screen = () => {
 
     const [currentFullName, setCurrentFullName] = useState<string>(FullName);
     const [currentUserName, setCurrentUserName] = useState<string>(UserName);
-    const [currentUserDOB, setCurrentUserDOB] = useState<string>(UserDOB);
     const [currentUserEmail, setCurrentUserEmail] = useState<string>(UserEmail);
     const [currentUserPhone, setCurrentUserPhone] = useState<string>(UserPhoneNumber);
 
@@ -194,7 +192,6 @@ const EditInformation_Screen = () => {
             <View style={EditInformation_Style.default.detailContainer}>
                 <Template_Input_Information title="Họ và tên" value={currentFullName} setValue={setCurrentFullName} />
                 <Template_Input_Information title="Tên người dùng" value={currentUserName} setValue={setCurrentUserName} />
-                <Template_Input_Information title="Ngày sinh" value={currentUserDOB} setValue={setCurrentUserDOB} />
                 <Template_Input_Information title="Email" value={currentUserEmail} setValue={setCurrentUserEmail} />
                 <Template_Input_Information title="Số điện thoại" value={currentUserPhone} setValue={setCurrentUserPhone} />
             </View>
