@@ -162,12 +162,13 @@ const ForgetPass_TT = () => {
               }
 
 
+                {checkFlow==1?
                 <TouchableOpacity 
                 style={Login_TT_Style.forgotPassword}
                 onPress={() => handleSendOTP()}
                 >
                     <Text >Gửi lại mã OTP</Text>
-                </TouchableOpacity>
+                </TouchableOpacity>:null}
 
 
                 <TouchableOpacity 
