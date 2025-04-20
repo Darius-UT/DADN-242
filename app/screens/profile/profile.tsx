@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, Image, ImageBackground, ScrollView, SafeAreaView, Switch, TouchableOpacity } from "react-native";
 import ToggleSwitch from 'toggle-switch-react-native';
 import * as ProfileScreen_Style from "@/styles/screens/profile/profile";
@@ -8,6 +8,9 @@ import { TYPOGRAPHY } from "@/constants/Fonts";
 import { Asset, ImageLibraryOptions, launchImageLibrary } from "react-native-image-picker";
 import { useNavigation } from "expo-router";
 import Top_Header from "@/components/common/Top_Header";
+import { getUser } from "@/services/api.service";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import moment from 'moment';
 
 
 
@@ -20,9 +23,8 @@ const UserPhoneNumber = "0766909533";
 const UserJoinedDate = "14/03/2025";
 
 
-
 // Thành phần 1: Thông tin cá nhân
-const PersonalInformation = () => {
+const PersonalInformation = (props: any) => {
   const [] = useFonts({
     "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
     "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
@@ -36,17 +38,18 @@ const PersonalInformation = () => {
       </View>
     );
   };
+  const data = props.data;
+  console.log(data);
 
   return (
     <View style={ProfileScreen_Style.PersonalInformation_Style.container}>
       <Text style={ProfileScreen_Style.PersonalInformation_Style.titleText}>Hồ sơ cá nhân</Text>
       <View style={ProfileScreen_Style.PersonalInformation_Style.contentContainer}>
-        {RowInformation("Họ và tên", `${UserName}`)}
-        {RowInformation("Ngày sinh", `${UserDOB}`)}
-        {RowInformation("Email", `${UserEmail}`)}
-        {RowInformation("Số điện thoại", `${UserPhoneNumber}`)}
-        {RowInformation("Chức vụ", `${UserRole}`)}
-        {RowInformation("Ngày tham gia", `${UserJoinedDate}`)}
+        {RowInformation("Họ và tên", `${data.fullName}`)}
+        {RowInformation("Email", `${data.email}`)}
+        {RowInformation("Số điện thoại", `${data.phoneNumber}`)}
+        {RowInformation("Chức vụ", `${data.role}`)}
+        {RowInformation("Ngày tham gia", `${data.joinedDate}`)}
       </View>
     </View>
   );
@@ -126,6 +129,42 @@ const ProfileScreen = () => {
       }
     });
   };
+  const [fullName, setFullName] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
+  const [role, setRole] = useState<string>("");
+  const [email, setEmail] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [joinedDate, setJoinedDate] = useState<string>("");
+  const getInfo = async () => {
+    try {
+      const token = await AsyncStorage.getItem("accessToken");
+      const response = await getUser(token);
+      setFullName(response.data.fullName);
+      setUsername(response.data.username);
+      setRole(response.data.role);
+      setEmail(response.data.email);
+      setPhoneNumber(response.data.phone);
+      setJoinedDate(moment(response.data.createdAt, 'YYYY-MM-DD').format('DD/MM/YYYY'));
+    }
+    catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }
+
+  useEffect(() => {
+    getInfo();
+  }, []);
+
+  const handleLogout = async () => {
+    try {
+      await AsyncStorage.removeItem("accessToken");
+      await AsyncStorage.removeItem("userId");
+      await AsyncStorage.removeItem("username");
+      navigation.navigate("Login");
+    } catch (error) {
+      console.error("Error removing token:", error);
+    }
+  }
 
   return (
     <View>
@@ -154,20 +193,22 @@ const ProfileScreen = () => {
 
         {/* Tên người dùng + Vai trò */}
         <View style={ProfileScreen_Style.default.userInformationContainer}>
-          <Text style={ProfileScreen_Style.default.userNameText}>{UserName}</Text>
-          <Text style={ProfileScreen_Style.default.fullNameText}>{"(" + FullName + ")"}</Text>
-          <Text style={[ProfileScreen_Style.default.userRoleText, { marginTop: 5 }]}>{UserRole}</Text>
+          <Text style={ProfileScreen_Style.default.userNameText}>{username}</Text>
+          <Text style={ProfileScreen_Style.default.fullNameText}>{"(" + fullName + ")"}</Text>
+          <Text style={[ProfileScreen_Style.default.userRoleText, { marginTop: 5 }]}>{role}</Text>
         </View>
 
         {/* Chi tiết trang */}
         <View style={ProfileScreen_Style.default.mainContentContainer}>
-          <PersonalInformation />
+          <PersonalInformation
+            data = {{fullName, username, role, email, phoneNumber, joinedDate}}
+           />
           <Setting />
         </View>
 
         {/* Nút đăng xuất */}
         <View style={ProfileScreen_Style.default.logoutButtonContainer}>
-          <TouchableOpacity style={ProfileScreen_Style.default.logoutButton} onPress={() => navigation.navigate("Login")}>
+          <TouchableOpacity style={ProfileScreen_Style.default.logoutButton} onPress={() => handleLogout()}>
             <Text style={ProfileScreen_Style.default.logoutButtonText}>Đăng xuất</Text>
           </TouchableOpacity>
         </View>

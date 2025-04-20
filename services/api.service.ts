@@ -18,4 +18,14 @@ const getUser = (token:any) => {
     return axios.get(URL_BACKEND, config)
 }
 
-export {loginAPI, getUser};
+const sendOTP = (data: any) => {
+    const URL_BACKEND = "api/v1/reset-password"
+    return axios.post(URL_BACKEND, data)
+}
+const resetPassword  = (data: any) => {
+    const URL_BACKEND = "api/v1/reset-password"
+    return axios.put(URL_BACKEND, data)
+}
+
+
+export {loginAPI, getUser, sendOTP, resetPassword};

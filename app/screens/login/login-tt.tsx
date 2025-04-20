@@ -57,7 +57,6 @@ const Login_TT = () => {
         navigation.navigate("Main")
       }
       else {
-        alert("Phiên đăng nhập đã hết hạn hoặc không hợp lệ!");
         await AsyncStorage.removeItem('accessToken');
         await AsyncStorage.removeItem('userId');
         await AsyncStorage.removeItem('username');
@@ -113,7 +112,10 @@ const Login_TT = () => {
                 </TextInput>
               </View>
 
-              <TouchableOpacity style={Login_TT_Style.forgotPassword}>
+              <TouchableOpacity 
+              style={Login_TT_Style.forgotPassword}
+              onPress={() => navigation.navigate("Forget")}
+              >
                 <Text >Quên mật khẩu?</Text>
               </TouchableOpacity>
             </View>
