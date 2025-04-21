@@ -1,10 +1,10 @@
-import Top_Header from "@/components/common/Top_Header";
 import React from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import * as UserAddScreen_Style from "@/styles/screens/adminScreens/user_add/userAdd";
 import { useFonts } from "expo-font";
 import TextInputTemplate from "@/components/common/TextInput";
+import Top_Header_Admin from "@/components/common/Top_Header_Admin";
 
 
 
@@ -19,7 +19,7 @@ const UserAdd_Screen = () => {
     return (
         <View>
             {/* Top - header */}
-            <Top_Header></Top_Header>
+            <Top_Header_Admin />
 
             {/* Giao diện chính */}
             <ScrollView

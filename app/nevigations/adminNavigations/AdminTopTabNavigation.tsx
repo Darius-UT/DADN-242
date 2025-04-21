@@ -4,8 +4,8 @@ import EngineerUserList_Screen from '@/app/screens/adminScreens/user_list/Engine
 import AdminUserList_Screen from '@/app/screens/adminScreens/user_list/AdminUserList';
 import { COLORS } from '@/constants/Colors';
 import { View } from 'react-native';
-import Top_Header from '@/components/common/Top_Header';
 import { TYPOGRAPHY } from '@/constants/Fonts';
+import Top_Header_Admin from '@/components/common/Top_Header_Admin';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -16,7 +16,7 @@ export default function AdminSwipeTabs() {
                 // height: 1000,
                 flex: 1,
             }}>
-            <Top_Header></Top_Header>
+            <Top_Header_Admin></Top_Header_Admin>
             <Tab.Navigator
                 screenOptions={{
                     tabBarStyle: { backgroundColor: COLORS.lightSecondary },

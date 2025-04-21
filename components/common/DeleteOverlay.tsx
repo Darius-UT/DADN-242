@@ -34,12 +34,14 @@ const DeleteOverlay: React.FC<DeleteOverlayProps> = ({ openOverlay, setOverlayOp
             backdropOpacity={0}
             onBackdropPress={() => setOverlayOpen(false)}
             style={{
-                position: "absolute",
-                top: position.y - 100,  // Hiển thị dưới nút (thêm khoảng cách)
-                left: position.x - 200,
+                margin: 0
             }}
         >
-            <View style={DeleteOverlay_Style.overallContainer}>
+            <View style={[DeleteOverlay_Style.overallContainer, {
+                    position: 'absolute',
+                    top: position.y - (position.y * 0.3), // thêm khoảng cách nếu muốn
+                    left: position.x - (position.x * 0.6),
+            }]}>
                 <TouchableOpacity style={DeleteOverlay_Style.inActiveButton} onPress={() => setOverlayOpen(false)}>
                     <Text style={DeleteOverlay_Style.inActiveButtonText}>Vô hiệu hóa</Text>
                 </TouchableOpacity>
