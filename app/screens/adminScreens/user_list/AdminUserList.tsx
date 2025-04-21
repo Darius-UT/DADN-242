@@ -1,11 +1,12 @@
 import { useFonts } from "expo-font";
-import React from "react";
+import React, { useCallback } from "react";
 import { ScrollView } from "react-native";
 import { UserBoxTemplate } from "./EngineerUserList";
 import * as AdminUserList_Style from "@/styles/screens/adminScreens/user_list/adminUserList";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getUserByRole } from "@/services/api.service";
-
+import { useFocusEffect } from "@react-navigation/native";
+import { useIsFocused } from '@react-navigation/native';
 
 
 const AdminUserList_Screen = () => {
@@ -13,7 +14,6 @@ const AdminUserList_Screen = () => {
         "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
         "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
     });
-
     const [data, setData] = React.useState([]);
     const handleGetUser = async () => {
         try{
@@ -30,11 +30,13 @@ const AdminUserList_Screen = () => {
             console.error(error);
         }
     }
+    const isFocused = useIsFocused(); // Sử dụng useIsFocused để kiểm
 
-    React.useEffect(() => {
-        handleGetUser();
-        console.log(data);
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            handleGetUser();
+        }, [isFocused])
+    );
 
     return (
         <ScrollView contentContainerStyle={AdminUserList_Style.default.overallContainer}>

@@ -185,6 +185,7 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
                                 setSelected={(myChoice: string) => setAction(myChoice.toString())}
 
                                 placeholder="Chọn hành động"
+                                searchPlaceholder="Tìm hành động"
                                 boxStyles={ModalAddRule_Style.selectList_boxStyle}
                                 dropdownStyles={ModalAddRule_Style.selectList_dropDownStyle}
                             />
@@ -320,6 +321,7 @@ const ModalAddRule_Style = StyleSheet.create({
         borderColor: COLORS.primary,
         borderRadius: 8,
         paddingHorizontal: 12,
+        paddingVertical: 10,
     },
 
     valueContainer: {

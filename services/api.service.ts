@@ -87,4 +87,14 @@ const getAllHistoryLogs = (token:any) => {
     return axios.get(URL_BACKEND, config)
 }
 
-export {loginAPI, getUser, sendOTP, resetPassword, updateUser, addUser, getUserByRole, addDevice, addZone, getAllHistoryLogs};
+const deleteUser = (token:any, id:any) => {
+    const URL_BACKEND = `api/v1/admin/users/${id}`
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.delete(URL_BACKEND, config)
+}
+
+export {loginAPI, getUser, sendOTP, resetPassword, updateUser, addUser, getUserByRole, addDevice, addZone, getAllHistoryLogs, deleteUser};

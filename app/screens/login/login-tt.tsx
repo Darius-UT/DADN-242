@@ -30,7 +30,6 @@ const Login_TT = (route:any ) => {
   const navigation = useNavigation<any>();
   const handleLogin = async () => {
     try {
-      console.log(route.customProp);
       const response:any = await loginAPI({ username, password });
       if (response && response.statusCode == 200) {
         if (route.customProp == "admin" && response.data.role != "Admin") {
@@ -57,7 +56,9 @@ const Login_TT = (route:any ) => {
       const token = await AsyncStorage.getItem('accessToken');
       const response:any = await getUser(token);
       if (response && response.statusCode == 200) {
-        navigation.navigate("Main")
+        if (route.customProp == "admin" && response.data.role == "Admin") {
+          navigation.navigate("Main")
+        }
       }
       else {
         await AsyncStorage.removeItem('accessToken');

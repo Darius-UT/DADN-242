@@ -1,5 +1,5 @@
 import { useFonts } from "expo-font";
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { View, Text, TouchableOpacity, Image, ScrollView, Modal } from "react-native";
 import * as EngineerUserList_Style from "@/styles/screens/adminScreens/user_list/engineerUserList";
 import { Entypo } from "@expo/vector-icons";
@@ -7,6 +7,7 @@ import ModalTemplate from "@/components/common/ModalAdmin";
 import DeleteOverlay from "@/components/common/DeleteOverlay";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getUserByRole } from "@/services/api.service";
+import { useFocusEffect, useIsFocused } from "@react-navigation/native";
 
 
 
@@ -18,7 +19,7 @@ interface UserBoxTemplateProps {
     dataElement?: any; // Tham số bổ sung nếu cần
 }
 
-export const UserBoxTemplate: React.FC<UserBoxTemplateProps> = ({ userNameUser, fullNameUser, sourceImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFgZ0Waa7MS6CB8D5IcsbPJMQhKiz1VsZL2w&s", dataElement }) => {
+export const UserBoxTemplate: React.FC<UserBoxTemplateProps> = ({ userNameUser, fullNameUser, sourceImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFgZ0Waa7MS6CB8D5IcsbPJMQhKiz1VsZL2w&s", dataElement}) => {
     const [] = useFonts({
         "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
         "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
@@ -102,21 +103,26 @@ export const UserBoxTemplate: React.FC<UserBoxTemplateProps> = ({ userNameUser, 
              />
 
             {/* Overlay -> Tùy chọn: Xóa, vô hiệu hóa */}
-            <DeleteOverlay openOverlay={openOverlay} setOverlayOpen={setOverlayOpen} position={position} />
+            <DeleteOverlay 
+            openOverlay={openOverlay} 
+            setOverlayOpen={setOverlayOpen} 
+            position={position}
+            id={id}
+             />
         </View>
     );
 };
 
 
 // Giao diện chính
-const EngineerUserList_Screen = () => {
+const EngineerUserList_Screen = (props:any) => {
     const [] = useFonts({
         "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
         "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
     });
 
     const [data, setData] = React.useState([]);
-
+    const {reloadTrigger,setReloadTrigger} = props; // Nhận hàm setReloadTrigger từ props nếu cần
 
     const handleGetUser = async () => {
         try{
@@ -134,9 +140,13 @@ const EngineerUserList_Screen = () => {
         }
     }
 
-    React.useEffect(() => {
-        handleGetUser();
-    }, []);
+    const isFocused = useIsFocused(); // Sử dụng useIsFocused để kiểm
+
+    useFocusEffect(
+        useCallback(() => {
+          handleGetUser();
+        }, [isFocused])
+      );
 
     return (
         <ScrollView
@@ -150,6 +160,8 @@ const EngineerUserList_Screen = () => {
                     fullNameUser={element.fullName}
                     sourceImage={element.sourceImage ?? undefined}
                     dataElement={element}
+                    reloadTrigger={reloadTrigger} // Truyền reloadTrigger vào UserBoxTemplate
+                    setReloadTrigger={setReloadTrigger} // Truyền hàm setReloadTrigger vào UserBoxTemplate
                 />
             ))}
         </ScrollView>

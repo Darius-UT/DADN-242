@@ -6,9 +6,6 @@ const AdminUserList_Style = StyleSheet.create({
         padding: globalStyle.mainPadding.padding,
         flexDirection: "column",
         alignItems: "center",
-        // rowGap: 5,
-        // backgroundColor: COLORS.background,
-        flex: 1,
     },
 });
 
