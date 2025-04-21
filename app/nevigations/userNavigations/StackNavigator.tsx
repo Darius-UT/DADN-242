@@ -17,7 +17,10 @@ export default function StackNavigator() {
   return (
     <Stack.Navigator screenOptions={screenOptions}>
       {/* Màn hình đăng nhập */}
-      <Stack.Screen name="LoginTT" component={Login_TT} />
+      <Stack.Screen
+        name="LoginTT"
+        children={(props) => <Login_TT {...props} customProp="user" />}
+      />
 
       {/* Màn hình chính */}
       <Stack.Screen name="Main" component={BottomTabNavigator} />

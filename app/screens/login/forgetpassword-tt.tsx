@@ -48,7 +48,7 @@ const ForgetPass_TT = () => {
                 alert("Gửi OTP thành công!");
             }
             else {
-                alert("Gửi OTP thất bại!");
+                alert("Tên đăng nhập hoặc email không đúng!");
             }
             setIsLoading(false);
         } catch (error) {

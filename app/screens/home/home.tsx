@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -13,6 +13,12 @@ import globalStyle from '@/styles/global';
 import { SeeAll_Button } from '@/components/common/Button';
 import { useNavigation } from 'expo-router';
 import { COLORS } from '@/constants/Colors';
+import Login_TT_Style from '@/styles/screens/login/login-tt';
+import ModalTemplate from '@/components/common/AddDevice';
+import ModalAddDevice from '@/components/common/AddDevice';
+import ModalAddZone from '@/components/common/AddZone';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAllHistoryLogs } from '@/services/api.service';
 
 const GreenHouse_Name = "Bách khoa";
 const GreenHouse_Address = "268, Lý Thường Kiệt, P.14, Q.10, Tp Hồ Chí Minh";
@@ -33,76 +39,73 @@ const GeneralValue = () => {
     "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
   });
 
-  const dataCard = (
-    areaName: String,
-    temperature: number,
-    light: number,
-    moisture: number,
-    soil_moisture: number) => {
-    return (
-      <TouchableOpacity style={Home_Style.GeneraValue.dataCardContainer}>
-        <View style={Home_Style.GeneraValue.dataCard_Area_Container}>
-          <Text style={Home_Style.GeneraValue.dataCard_Area}>Khu {areaName}</Text>
-        </View>
-
-        <View>
-          <View style={Home_Style.GeneraValue.dataCard_rowElement}>
-            <Text style={Home_Style.GeneraValue.dataCard_nameElement}>Nhiệt độ</Text>
-            <Text style={Home_Style.GeneraValue.dataCard_dataElement}>{temperature} ℃</Text>
-          </View>
-          <View style={Home_Style.GeneraValue.dataCard_rowElement}>
-            <Text>Ánh sáng</Text>
-            <Text>{light} Lux</Text>
-          </View>
-          <View style={Home_Style.GeneraValue.dataCard_rowElement}>
-            <Text>Độ ẩm</Text>
-            <Text>{moisture} %</Text>
-          </View>
-          <View style={Home_Style.GeneraValue.dataCard_rowElement}>
-            <Text>Độ ẩm đất</Text>
-            <Text>{soil_moisture} %</Text>
-          </View>
-        </View>
-      </TouchableOpacity >
-    );
-  };
+  const [isVisibleDevice, setModalVisibleDevice] = React.useState(false);
+  const [isVisibleZone, setModalVisibleZone] = React.useState(false);
 
   return (
     <View>
-      <View style={Home_Style.GeneraValue.subTitleTextContainer}>
-        <Text style={Home_Style.GeneraValue.subTitleText}>Chỉ số tổng quan</Text>
-      </View>
+      <TouchableOpacity
+          style={Login_TT_Style.loginButton}
+          onPress={() => setModalVisibleDevice(true)}>
+          <Text style={Login_TT_Style.lastLoginText}>Thêm thiết bị</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={Login_TT_Style.loginButton}
+        onPress={() => setModalVisibleZone(true)}>
+        <Text style={Login_TT_Style.lastLoginText}>Thêm khu vực</Text>
+      </TouchableOpacity>
 
-      <ScrollView
-        style={{ maxHeight: 300, }}
-        contentContainerStyle={Home_Style.GeneraValue.scrollViewContainer}
-        onStartShouldSetResponderCapture={() => true}
-        nestedScrollEnabled={true} >
-        {dataCard("A", 23, 23, 43, 22)}
-        {dataCard("B", 23, 23, 43, 22)}
-        {dataCard("C", 23, 23, 43, 22)}
-        {dataCard("D", 23, 23, 43, 22)}
-      </ScrollView>
+      <ModalAddDevice
+        isVisible={isVisibleDevice}
+        setModalVisible={setModalVisibleDevice}
+      />
+
+      <ModalAddZone
+        isVisible={isVisibleZone}
+        setModalVisible={setModalVisibleZone}
+      />
     </View>
   );
 };
 
 
-// CẢNH BÁO GẦN ĐÂY
-const LatelyNotification = () => {
+// HOẠT ĐỘNG GẦN ĐÂY
+const LatelyHistoryLogs = () => {
   const [] = useFonts({
     "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
     "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
   });
+  const [data, setData] = React.useState([]);
 
-  const notification = (noti_content: String, noti_time: number) => {
+  const getAllLogs = async () => {
+    try {
+      const token = await AsyncStorage.getItem('accessToken');
+      const response :any = await getAllHistoryLogs(token);
+      if (response && response.statusCode == 200) {
+        setData(response.data);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    getAllLogs();
+
+  }, []);
+
+  const notification = (noti_content: any, noti_time: string) => {
+    const content = noti_content.username 
+  ? `Người dùng ${noti_content.username} đã ${noti_content.action}` 
+  : `Thiết bị ${noti_content.device} đã được ${noti_content.action}`;
+
     return (
       <TouchableOpacity style={Home_Style.LatelyNotification.noti_element_container}>
         <View style={Home_Style.LatelyNotification.noti_level}></View>
 
         <View style={Home_Style.LatelyNotification.noti_content_container}>
-          <Text>{noti_content}</Text>
-          <Text style={Home_Style.LatelyNotification.noti_time}>{noti_time} phút trước</Text>
+          <Text>{content}</Text>
+          <Text style={Home_Style.LatelyNotification.noti_time}>{noti_time}</Text>
         </View>
 
         <Text style={Home_Style.LatelyNotification.noti_3dots}>...</Text>
@@ -116,15 +119,17 @@ const LatelyNotification = () => {
   return (
     <View>
       <View style={Home_Style.GeneraValue.subTitleTextContainer}>
-        <Text style={Home_Style.GeneraValue.subTitleText}>Cảnh báo gần đây</Text>
+        <Text style={Home_Style.GeneraValue.subTitleText}>Hoạt động gần đây</Text>
       </View>
 
       <ScrollView
         style={{ paddingTop: 8 }}
         contentContainerStyle={Home_Style.LatelyNotification.scrollViewContainer}>
-        {notification("Độ ẩm đất khu B dưới 30% lúc 14:35 ngày 18/02/25", 3)}
-        {notification("Cảm biến ánh sáng A-L14 đã bị người khác giết hại.", 3)}
-        {notification("Độ ẩm đất khu B dưới 30% lúc 14:35 ngày 18/02/25", 3)}
+        {data.map((element: any) => (
+          <View key={element.id}>
+            {notification(element, formatTimeAgo(element.timestamp))}
+          </View>
+        ))}
       </ScrollView>
 
       <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("RealTime")} />
@@ -183,7 +188,7 @@ const Home = () => {
 
       {/* Main Content */}
       <ScrollView
-        style={{ padding: globalStyle.mainPadding.padding, backgroundColor: COLORS.white }}
+        style={{ padding: globalStyle.mainPadding.padding, backgroundColor: COLORS.background }}
         contentContainerStyle={Home_Style.default.mainContainer}
         nestedScrollEnabled={true}
         showsVerticalScrollIndicator={false}
@@ -209,14 +214,44 @@ const Home = () => {
         {/* Mục: Chỉ số tổng quan */}
         <GeneralValue />
 
-        {/* Mục: Cảnh báo gần đây */}
-        <LatelyNotification />
+        {/* Mục: Hoạt động gần đây */}
+        <LatelyHistoryLogs />
 
-        {/* Mục: Trạng thái thiết bị */}
-        <DeviceState />
+        {/* Mục: Trạng thái thiết bị
+        <DeviceState /> */}
 
       </ScrollView>
     </View>
   );
 };
+
+
+const formatTimeAgo = (timestamp:any) => {
+  const now = new Date();
+  const then = new Date(timestamp);
+  const diff = now.getTime() - then.getTime(); // Difference in milliseconds
+
+  const diffMinutes = Math.floor(diff / 1000 / 60); // Convert to minutes
+  const diffHours = Math.floor(diff / 1000 / 60 / 60); // Convert to hours
+  const diffDays = Math.floor(diff / 1000 / 60 / 60 / 24); // Convert to days
+  const diffMonths = Math.floor(diffDays / 30); // Assuming 30 days per month
+  const diffYears = Math.floor(diffDays / 365); // Assuming 365 days per year
+
+  if (diffYears >= 1) {
+    return `${diffYears} năm trước`;
+  } else if (diffMonths >= 1) {
+    return `${diffMonths} tháng trước`;
+  } else if (diffDays >= 1) {
+    return `${diffDays} ngày trước`;
+  } else if (diffHours >= 1) {
+    return `${diffHours} giờ trước`;
+  } else if (diffMinutes >= 1) {
+    return `${diffMinutes} phút trước`;
+  } else {
+    return 'Vừa xong';
+  }
+}
+
+
+
 export default Home;

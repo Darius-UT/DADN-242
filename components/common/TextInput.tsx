@@ -99,6 +99,7 @@ const TextInputTemplate_Style = StyleSheet.create({
         borderRadius: 5,
         borderColor: COLORS.primary,
         paddingHorizontal: 20,
+        paddingVertical: 10,
     },
 
     selectBox: {

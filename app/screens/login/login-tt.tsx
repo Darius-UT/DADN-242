@@ -20,20 +20,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
-const Login_TT = () => {
+const Login_TT = (route:any ) => {
   const [] = useFonts({
     "TheNautigal-Bold": require("@/assets/fonts/The_Nautigal/TheNautigal-Bold.ttf"),
     "Roboto-Bold": require("@/assets/fonts/Roboto/static/Roboto-Bold.ttf"),
   });
-
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const navigation = useNavigation<any>();
   const handleLogin = async () => {
     try {
       const response:any = await loginAPI({ username, password });
-      console.log(response);
       if (response && response.statusCode == 200) {
+        if (route.customProp == "admin" && response.data.role != "Admin") {
+          alert("Bạn không có quyền truy cập vào trang này!");
+          return;
+        }
         await AsyncStorage.setItem('accessToken', response.data.token);
         await AsyncStorage.setItem('userId', String(response.data.id));
         await AsyncStorage.setItem('username', response.data.username);
@@ -54,7 +56,9 @@ const Login_TT = () => {
       const token = await AsyncStorage.getItem('accessToken');
       const response:any = await getUser(token);
       if (response && response.statusCode == 200) {
-        navigation.navigate("Main")
+        if (route.customProp == "admin" && response.data.role == "Admin") {
+          navigation.navigate("Main")
+        }
       }
       else {
         await AsyncStorage.removeItem('accessToken');

@@ -13,6 +13,6 @@ export const COLORS = {
     Yello: "#FFD045",
     Gray: "#818181",
 
-    background: "#EBEBEB",
+    background: "whitesmoke",
     darkerBackground: "#D9D9D9",
 };

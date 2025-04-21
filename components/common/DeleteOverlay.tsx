@@ -1,5 +1,7 @@
 import { COLORS } from "@/constants/Colors";
 import { TYPOGRAPHY } from "@/constants/Fonts";
+import { deleteUser } from "@/services/api.service";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React from "react";
 import { StyleSheet, TouchableOpacity, View, Text, Alert } from "react-native";
 import Modal from "react-native-modal";
@@ -10,22 +12,28 @@ interface DeleteOverlayProps {
     openOverlay: boolean;
     setOverlayOpen: (openOverlay: boolean) => void;
     position: { x: number; y: number };  // Nhận vị trí để đặt modal
+    id: string;
 };
 
 
-const DeleteOverlay: React.FC<DeleteOverlayProps> = ({ openOverlay, setOverlayOpen, position }) => {
-    const AlertWhenDelete = () => {
-        Alert.alert(
-            "Xác nhận",
-            "Bạn có chắc chắn muốn xóa?",
-            [
-                { text: "Hủy", style: "cancel" },
-                { text: "Xóa", style: "destructive"},
-            ],
-            { cancelable: true }
-        )
-    };
-
+const DeleteOverlay: React.FC<DeleteOverlayProps> = ({ openOverlay, setOverlayOpen, position, id}) => {
+    const handleDelete = async () => {
+        try {
+            const token = await AsyncStorage.getItem('accessToken');
+            const response:any = await deleteUser(token, id);
+            if (response && response.status == 200) {
+                alert("Xóa người dùng thành công!");
+            }
+            else {
+                alert("Lỗi xóa người dùng!");
+            }
+        }
+        catch (error) {
+            console.error(error);
+        }
+        // Đóng overlay sau khi xóa
+        setOverlayOpen(false);
+    }
     return (
         <Modal
             isVisible={openOverlay}
@@ -34,16 +42,15 @@ const DeleteOverlay: React.FC<DeleteOverlayProps> = ({ openOverlay, setOverlayOp
             backdropOpacity={0}
             onBackdropPress={() => setOverlayOpen(false)}
             style={{
-                position: "absolute",
-                top: position.y - 100,  // Hiển thị dưới nút (thêm khoảng cách)
-                left: position.x - 200,
+                margin: 0
             }}
         >
-            <View style={DeleteOverlay_Style.overallContainer}>
-                <TouchableOpacity style={DeleteOverlay_Style.inActiveButton} onPress={() => setOverlayOpen(false)}>
-                    <Text style={DeleteOverlay_Style.inActiveButtonText}>Vô hiệu hóa</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={DeleteOverlay_Style.deleteButton} onPress={() => { AlertWhenDelete(), setOverlayOpen(false); }}>
+            <View style={[DeleteOverlay_Style.overallContainer, {
+                    position: 'absolute',
+                    top: position.y - (position.y * 0.3), // thêm khoảng cách nếu muốn
+                    left: position.x - (position.x * 0.6),
+            }]}>
+                <TouchableOpacity style={DeleteOverlay_Style.deleteButton} onPress={() => handleDelete()}>
                     <Text style={DeleteOverlay_Style.deleteButtonText}>Xóa</Text>
                 </TouchableOpacity>
             </View>
