@@ -160,8 +160,6 @@ const EngineerUserList_Screen = (props:any) => {
                     fullNameUser={element.fullName}
                     sourceImage={element.sourceImage ?? undefined}
                     dataElement={element}
-                    reloadTrigger={reloadTrigger} // Truyền reloadTrigger vào UserBoxTemplate
-                    setReloadTrigger={setReloadTrigger} // Truyền hàm setReloadTrigger vào UserBoxTemplate
                 />
             ))}
         </ScrollView>

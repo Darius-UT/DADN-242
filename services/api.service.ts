@@ -97,4 +97,92 @@ const deleteUser = (token:any, id:any) => {
     return axios.delete(URL_BACKEND, config)
 }
 
-export {loginAPI, getUser, sendOTP, resetPassword, updateUser, addUser, getUserByRole, addDevice, addZone, getAllHistoryLogs, deleteUser};
+const addRule = (token:any, data: any) => {
+    const URL_BACKEND = "api/v1/rules/create"
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.post(URL_BACKEND, data, config)
+}
+
+const getRulesByDevice = (token:any, feedName:string) => {
+    const URL_BACKEND = `api/v1/rules/getRulesByDevice?feedName=${feedName}`
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.get(URL_BACKEND, config)
+}
+
+const updateRule = (token:any, id:any, data: any) => {
+    const URL_BACKEND = `api/v1/rules/update?id=${id}`
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.put(URL_BACKEND, data, config)
+}
+const deleteRule = (token:any, id:any) => {
+    const URL_BACKEND = `api/v1/rules/delete?id=${id}`
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.delete(URL_BACKEND, config)
+}
+
+
+const addConditionRule = (token:any,data: any) => {
+    const URL_BACKEND = `api/v1/condition-rules/create`
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.put(URL_BACKEND, data, config)
+}
+
+const getConditionRuleByRuleId = (token:any, ruleId:any) => {
+    const URL_BACKEND = `api/v1/condition-rules/getByRuleId?ruleId=${ruleId}`
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.get(URL_BACKEND, config)
+}
+
+const updateConditionRule = (token:any, id:any, data: any) => {
+    const URL_BACKEND = `api/v1/condition-rules/update?id=${id}`
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.put(URL_BACKEND, data, config)
+}
+
+const deleteConditionRule = (token:any, id:any) => {
+    const URL_BACKEND = `api/v1/condition-rules/delete?id=${id}`
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.delete(URL_BACKEND, config)
+}
+
+
+
+
+export {loginAPI, getUser, sendOTP, resetPassword, 
+    updateUser, addUser, getUserByRole, addDevice, 
+    addZone, getAllHistoryLogs, deleteUser
+    , addRule, getRulesByDevice, updateRule, deleteRule,
+    addConditionRule, getConditionRuleByRuleId, updateConditionRule, deleteConditionRule
+};
