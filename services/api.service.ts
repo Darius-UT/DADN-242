@@ -6,7 +6,9 @@ const loginAPI = (data: any) => {
     const URL_BACKEND = "api/v1/login"
     return axios.post(URL_BACKEND, data)
 }
-
+// await AsyncStorage.setItem('accessToken', response.data.token);
+// await AsyncStorage.setItem('userId', String(response.data.id));
+// await AsyncStorage.setItem('username', response.data.username);
 
 const getUser = (token:any) => {
     const URL_BACKEND = "api/v1/user/getUser"

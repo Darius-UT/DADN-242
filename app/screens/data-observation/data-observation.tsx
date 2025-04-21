@@ -18,19 +18,13 @@ import { useNavigation } from 'expo-router';
 import { COLORS } from '@/constants/Colors';
 import { Dimensions } from 'react-native';
 import LineChartTemplate from '@/components/common/LineChart';
-
+import { getAreas } from '@/services/area.service';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import SockJS from 'sockjs-client';
+import { Client } from '@stomp/stompjs';
 
 const screenWidth = Dimensions.get('window').width;
 
-
-
-
-const DataSelectList = [
-  { id: "1", value: "Khu vực A" },
-  { id: "2", value: "Khu vực B" },
-  { id: "3", value: "Khu vực C" },
-  { id: "4", value: "Khu vực D" },
-];
 
 const TemperatureSensor_GaugeData = [
   { id: "1", value: 36, min: 0, max: 100, name: "Cảm biến nhiệt độ A-T1" },
@@ -99,15 +93,55 @@ const ProgressChartData = {
 
 
 // Thành phần 1: Bảng lựa chọn khu vực
-const AreaSelectList = () => {
-  const [selected, setSelected] = React.useState("");
+type Option = { key: string; value: string }
+// 1) meta cho mọi loại cảm biến
+const SENSOR_META = [
+  { type: "temp",  label: "Nhiệt độ",          min: 0,   max: 100 },
+  { type: "light", label: "Ánh sáng",          min: 0,   max: 10000 },
+  { type: "air",   label: "Độ ẩm không khí",   min: 0,   max: 100 },
+  { type: "soil",  label: "Độ ẩm đất",         min: 0,   max: 100 },
+];
+
+// hàm sinh gauge cho 1 zone
+const buildGauges = (zoneId: string) =>
+  SENSOR_META.map(m => ({
+    id:     `${m.type}-${zoneId}`,
+    feed:   `${m.type}-${zoneId}`,
+    name:   `${m.label} ${m.type}-${zoneId}`,
+    min:    m.min,
+    max:    m.max,
+    value:  0,
+  }));
+type Gauge = ReturnType<typeof buildGauges>[number];
+
+const AreaSelectList: React.FC<{
+  onSelect: (zoneId: string) => void
+}> = ({ onSelect }) => {
+  const [selected, setSelected]   = React.useState<string>("");
+  const [dataList, setDataList]   = React.useState<Option[]>([]);
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const token      = await AsyncStorage.getItem("accessToken");
+        const { data }   = await getAreas(token);
+        const formatted  = data.map((it:any)=>({ key: it.id.toString(), value:`Khu vực ${it.name}` }));
+        setDataList(formatted);
+      } catch (err) {
+        console.log("Không tải được danh sách khu vực:", err);
+      }
+    })();
+  }, []);
+
 
   return (
     <View style={DataObservation_Style.AreaSelectedList_Style.selectListContainer}>
       <SelectList
-        setSelected={setSelected}
-        data={DataSelectList}
-        save="value"
+        data={dataList}
+        save="key"                           // trả về id
+        setSelected={(k:string)=>{
+          setSelected(k);
+          onSelect(k);                       // báo về cha
+        }}
 
         boxStyles={DataObservation_Style.AreaSelectedList_Style.selectListBox}
         placeholder="Chọn khu vực"
@@ -127,7 +161,7 @@ const AreaSelectList = () => {
 };
 
 // Thành phần 2: Giá trị trung bình
-const AverageData = () => {
+const AverageData  = () => {
   const [] = useFonts({
     "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
     "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
@@ -264,8 +298,67 @@ const AverageData = () => {
 };
 
 // Thành phần 3: Biểu đồ thời gian thực
-const RealTimeChart = () => {
+const RealTimeChart:React.FC<{ zoneId: string }> = ({zoneId }) => {
   const navigation = useNavigation<any>();
+  const [gauges, setGauges] = useState<Gauge[]>([]);
+  React.useEffect(() => {
+    let stompClient: Client;
+    if (!zoneId){
+      console.log("Chưa chọn khu vực nào.")
+      return;
+    }  
+    setGauges(buildGauges(zoneId));
+    (async () => {
+      
+      console.log("Kết nối đến WebSocket...");
+      // 1. Lấy token
+      const token = await AsyncStorage.getItem('accessToken');
+
+      // 2. Chọn host đúng cho emulator vs device
+      
+      // Ở Spring Boot SockJS endpoint mặc định bạn truy cập ws://.../ws/websocket
+      const wsUrl = `ws://192.168.1.10:9090/ws?token=${token}`;
+
+      // 3. Khởi tạo STOMP Client
+      stompClient = new Client({
+        forceBinaryWSFrames: true,
+        appendMissingNULLonIncoming: true,
+        // dùng brokerURL sẽ xài WebSocket native
+        brokerURL: wsUrl,
+        reconnectDelay: 5000,
+        debug: msg => console.log('[STOMP]', msg),
+        // onConnect thay vì subscribe trong option
+        onConnect: (frame: any) => {
+          console.log('STOMP Connected:', frame);
+          stompClient.subscribe('/topic/'+zoneId, (msg: any) => {
+            console.log('Received:', msg.body);
+            try {
+              const { feedName, value } = JSON.parse(msg.body);   // {"feedName":"light-1", ...}
+        
+              setGauges(prev =>
+                prev.map(g =>
+                  g.feed === feedName ? { ...g, value } : g
+                )
+              );
+        
+            } catch (err) {
+              console.warn("Message parse error:", err);
+            }
+          });
+        },
+        onStompError: err => console.error('STOMP error', err),
+      });
+
+      // 4. Kích hoạt
+      stompClient.activate();
+    })();
+
+    // Cleanup
+    return () => {
+      stompClient?.deactivate();
+      console.log('STOMP Disconnected');
+    };
+  }, [zoneId]);
 
   return (
     <View>
@@ -274,20 +367,18 @@ const RealTimeChart = () => {
       </View>
 
       <ScrollView
-        style={{ maxHeight: 220, }}
-        contentContainerStyle={DataObservation_Style.RealTimeChart_Style.container}
-        horizontal={true}
-        onStartShouldSetResponderCapture={() => true}
-        nestedScrollEnabled={true}
+        horizontal
         showsHorizontalScrollIndicator={false}
+        style={{ maxHeight: 220 }}
+        contentContainerStyle={DataObservation_Style.RealTimeChart_Style.container}
       >
-        {TemperatureSensor_GaugeData.map((sensor) => (
+        {gauges.map(g => (
           <GaugeChart
-            key={sensor.id}
-            value={sensor.value}
-            min={sensor.min}
-            max={sensor.max}
-            name={sensor.name}
+            key={g.id}
+            value={g.value}
+            min={g.min}
+            max={g.max}
+            name={`${g.name}`}  // “Cảm biến nhiệt độ temp-1”, …
           />
         ))}
       </ScrollView>
@@ -372,7 +463,7 @@ const DataObservation = () => {
     "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
     "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
   });
-
+  const [selectedZone, setSelectedZone] = React.useState<string>("");
   return (
     <View>
       {/* Header */}
@@ -393,13 +484,13 @@ const DataObservation = () => {
         </View>
 
         {/* SelectList: Chọn khu vực */}
-        <AreaSelectList />
+        <AreaSelectList onSelect={(id) => setSelectedZone(id)}  />
 
         {/* Mục: Giá trị trung bình */}
         <AverageData />
 
         {/* Mục: Biểu đồ thời gian thực */}
-        <RealTimeChart />
+        <RealTimeChart zoneId={selectedZone}/>
 
         {/* Mục: Biểu đồ xu hướng */}
         <TrendingChart />

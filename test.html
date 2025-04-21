@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>WebSocket STOMP Test</title>
+    <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/stompjs@2.3.3/lib/stomp.min.js"></script>
+  </head>
+  <body>
+    <h2>Test ChatController</h2>
+    <input type="text" id="messageInput" placeholder="Nhập tin nhắn">
+    <button onclick="sendMessage()">Gửi</button>
+    <ul id="messages"></ul>
+
+    <script>
+      var socket = new WebSocket('https://hcmut-iot-app.azurewebsites.net/ws?token=eyJhbGciOiJIUzM4NCJ9.eyJ1c2VybmFtZSI6InRlc3R1c2VyMSIsInN1YiI6InRlc3R1c2VyMSIsImV4cCI6MTc0NTI1NDI2OH0.0Rt1ppCrdQzhBC5qFfltcVGI_NLTSnx78N4LV_47YpnzhYCAQqhu2znl94_JYF0m'); // Thay đổi URL nếu cần
+      var stompClient = Stomp.over(socket);
+
+      stompClient.connect({}, function(frame) {
+        console.log('Connected: ' + frame);
+        // Subscribe đến kênh /topic/messages để nhận tin nhắn từ server
+        stompClient.subscribe('/topic/1', function(message) {
+          var messagesUl = document.getElementById("messages");
+          var li = document.createElement("li");
+          li.appendChild(document.createTextNode(message.body));
+          messagesUl.appendChild(li);
+        });
+      });
+
+      function sendMessage() {
+        var messageInput = document.getElementById("messageInput");
+        var feedName = "soil-1";
+        var message = messageInput.value;
+        var object = {
+          feedName: feedName,
+          timestamp: new Date().toISOString(),
+          value: message
+        };
+        console.log('Sending message:', object);
+        // Gửi tin nhắn tới server qua destination /app/chat
+        stompClient.send("/app/chat", {}, JSON.stringify(object));
+      }
+    </script>
+  </body>
+</html>
+
+
