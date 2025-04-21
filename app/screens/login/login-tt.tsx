@@ -56,9 +56,10 @@ const Login_TT = (route:any ) => {
       const token = await AsyncStorage.getItem('accessToken');
       const response:any = await getUser(token);
       if (response && response.statusCode == 200) {
-        if (route.customProp == "admin" && response.data.role == "Admin") {
-          navigation.navigate("Main")
+        if (route.customProp == "admin" && response.data.role != "Admin") {
+          return;
         }
+        navigation.navigate("Main")
       }
       else {
         await AsyncStorage.removeItem('accessToken');

@@ -1,9 +1,12 @@
 import Top_Header from '@/components/common/Top_Header';
+import { getAllZones } from '@/services/api.service';
 import * as DataObservation_Style from '@/styles/screens/data-observation/dataObservation';
 import * as DeviceControlScreen_Style from '@/styles/screens/device-control/deviceControl';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect, useIsFocused } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { useNavigation } from 'expo-router';
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { FlatList, ScrollView } from 'react-native-gesture-handler';
 
@@ -46,7 +49,26 @@ const DeviceControlScreen = () => {
     "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
     "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
   });
+  const [zones, setZones] = React.useState([]);
 
+  const getZones = async () => {
+    try {
+      const token = await AsyncStorage.getItem("accessToken");
+      const response:any = await getAllZones(token);
+      if (response.statusCode === 200) {
+        setZones(response.data);
+      } 
+    } catch (error) {
+      console.error("Error fetching zones:", error);
+    }
+  };
+  const isFocused = useIsFocused(); // Sử dụng useIsFocused để kiểm
+  
+  useFocusEffect(
+    useCallback(() => {
+      getZones();
+    }, [isFocused])
+  );
   return (
     <View>
       {/* Top_Header */}
@@ -66,8 +88,8 @@ const DeviceControlScreen = () => {
           <CardAreaTemplate nameArea='D' />
         </View> */}
         <View style={DeviceControlScreen_Style.default.cardContainer}>
-          {AreaName_Data.map((item, index) => (
-            <CardAreaTemplate key={item.key} nameArea={item.value} />
+          {zones.map((item:any) => (
+            <CardAreaTemplate key={item.id} nameArea={item.name} />
           ))}
         </View>
       </View>

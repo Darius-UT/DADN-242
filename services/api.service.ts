@@ -77,6 +77,16 @@ const addZone = (token:any, data: any) => {
     return axios.post(URL_BACKEND, data, config)
 }
 
+const getAllZones = (token:any) => {
+    const URL_BACKEND = "api/v1/zone"
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.get(URL_BACKEND, config)
+}
+
 const getAllHistoryLogs = (token:any) => {
     const URL_BACKEND = "api/v1/history-logs"
     const config = {
@@ -182,7 +192,7 @@ const deleteConditionRule = (token:any, id:any) => {
 
 export {loginAPI, getUser, sendOTP, resetPassword, 
     updateUser, addUser, getUserByRole, addDevice, 
-    addZone, getAllHistoryLogs, deleteUser
+    addZone,getAllZones , getAllHistoryLogs, deleteUser
     , addRule, getRulesByDevice, updateRule, deleteRule,
     addConditionRule, getConditionRuleByRuleId, updateConditionRule, deleteConditionRule
 };
