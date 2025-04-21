@@ -125,8 +125,8 @@ const LatelyHistoryLogs = () => {
       <ScrollView
         style={{ paddingTop: 8 }}
         contentContainerStyle={Home_Style.LatelyNotification.scrollViewContainer}>
-        {data.map((element: any) => (
-          <View key={element.id}>
+        {data.map((element: any, index) => (
+          <View key={index++}>
             {notification(element, formatTimeAgo(element.timestamp))}
           </View>
         ))}

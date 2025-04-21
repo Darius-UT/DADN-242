@@ -60,45 +60,14 @@ const ManualModeArea: React.FC<{ selectedTab: 'manual' | 'auto'; setSelectedTab:
             selectedTab === 'manual' && { opacity: 1 },
         ]}>
             <View style={DeviceControlModal_Style.modeContainer}>
-                <TouchableOpacity style={DeviceControlModal_Style.buttonModeContainer} onPress={selectedTab === 'auto' ? AlertWhenToggleMode : undefined} >
+                <TouchableOpacity style={DeviceControlModal_Style.buttonModeContainer} onPress={()=>setSelectedTab('manual')} >
                     <Text style={DeviceControlModal_Style.buttonModeText}>Chế độ thủ công</Text>
                 </TouchableOpacity>
             </View>
 
             {selectedTab === 'manual' &&
                 <View style={ManualModeArea_Style.contentContainer}>
-                    <Text style={{ margin: 5 }}>Chuyển sang chế độ tự động vào: </Text>
-
-                    <View style={ManualModeArea_Style.commonContainer}>
-                        <TouchableOpacity style={ManualModeArea_Style.dateContainer} onPress={() => setDateVisible(true)}>
-                            <Text style={ManualModeArea_Style.subTitleText}>Chọn ngày</Text>
-                            <Text style={ManualModeArea_Style.dateText} >{myDate.toLocaleDateString()}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={ManualModeArea_Style.dateContainer} onPress={() => setTimeVisible(true)}>
-                            <Text style={ManualModeArea_Style.subTitleText}>Chọn giờ</Text>
-                            <Text style={ManualModeArea_Style.dateText} >{myTime.toLocaleTimeString()}</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <DateTimePickerModal
-                        isVisible={isDateVisible}
-                        mode="date"
-                        onConfirm={(selectedDate) => {
-                            setDate(selectedDate);
-                            setDateVisible(false);
-                        }}
-                        onCancel={() => setDateVisible(false)}
-                    />
-                    <DateTimePickerModal
-                        isVisible={isTimeVisible}
-                        mode="time"
-                        onConfirm={(selectedTime) => {
-                            setTime(selectedTime);
-                            setTimeVisible(false);
-                        }}
-                        onCancel={() => setTimeVisible(false)}
-                    />
+                    
                 </View>
             }
         </View>
@@ -113,13 +82,16 @@ const AutoModeArea:
         setSelectedTab: React.Dispatch<React.SetStateAction<'manual' | 'auto'>>;
         deviceName: string,
         deviceSymbol: string
+        sensorList: any
     }> = ({
         selectedTab,
         setSelectedTab,
         deviceName,
-        deviceSymbol
+        deviceSymbol,
+        sensorList
     }) => {
-
+        
+        
         const [add_rule_modal_visible, set_add_rule_modal_visible] = useState<boolean>(false);
 
         const AlertWhenDeleteRule = () => {
@@ -170,7 +142,7 @@ const AutoModeArea:
                 selectedTab === 'auto' && { opacity: 1 },
             ]}>
                 <View style={DeviceControlModal_Style.modeContainer}>
-                    <TouchableOpacity style={DeviceControlModal_Style.buttonModeContainer} onPress={selectedTab === 'manual' ? AlertWhenToggleMode : undefined}>
+                    <TouchableOpacity style={DeviceControlModal_Style.buttonModeContainer} onPress={()=>setSelectedTab('auto')}>
                         <Text style={DeviceControlModal_Style.buttonModeText}>Chế độ tự động</Text>
                     </TouchableOpacity>
                 </View>
@@ -197,7 +169,7 @@ const AutoModeArea:
                     </View>}
 
                 {/* Modal thêm quy tắc */}
-                {/* <ModalAddRule visible={add_rule_modal_visible} setVisible={set_add_rule_modal_visible} rule_index={(Rule_Data.length + 1).toLocaleString()} deviceName={deviceName}/> */}
+                <ModalAddRule visible={add_rule_modal_visible} setVisible={set_add_rule_modal_visible} rule_index={(Rule_Data.length + 1).toLocaleString()} deviceName={deviceName} deviceSymbol={deviceSymbol} sensorList={sensorList} />
             </View>
         )
     };
@@ -209,10 +181,12 @@ interface deviceControlProps {
 
     deviceName: string;
     deviceSymbol: string;
+    sensorList: any;
 };
 
 // HÀM CHÍNH
-const DeviceControlModal: React.FC<deviceControlProps> = ({ visible, setVisible, deviceName, deviceSymbol }) => {
+const ActuatorModal: React.FC<deviceControlProps> = ({ visible, setVisible, deviceName, deviceSymbol , sensorList}) => {
+    
     const AlertWhenCancel = () => {
         Alert.alert(
             "Cảnh báo",
@@ -252,6 +226,7 @@ const DeviceControlModal: React.FC<deviceControlProps> = ({ visible, setVisible,
                             onToggle={() => {
                                 if (selectedTab === 'manual') {
                                     setIsEnable(!isEnable);
+                                    
                                 } else {
                                     Toast.show({
                                         type: 'info',
@@ -271,7 +246,7 @@ const DeviceControlModal: React.FC<deviceControlProps> = ({ visible, setVisible,
                 <ManualModeArea selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
 
                 {/* Khu vực chế độ tự động */}
-                <AutoModeArea selectedTab={selectedTab} setSelectedTab={setSelectedTab} deviceName={deviceName} deviceSymbol={deviceSymbol} />
+                <AutoModeArea selectedTab={selectedTab} setSelectedTab={setSelectedTab} deviceName={deviceName} deviceSymbol={deviceSymbol} sensorList={sensorList}/>
 
                 {/* Nút THOÁT + SAVE */}
                 <View style={DeviceControlModal_Style.cancel_save_button_container}>
@@ -288,7 +263,7 @@ const DeviceControlModal: React.FC<deviceControlProps> = ({ visible, setVisible,
     )
 };
 
-export default DeviceControlModal
+export default ActuatorModal
 
 
 

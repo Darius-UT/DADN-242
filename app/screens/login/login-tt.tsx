@@ -37,7 +37,7 @@ const Login_TT = (route:any ) => {
           return;
         }
         await AsyncStorage.setItem('accessToken', response.data.token);
-        await AsyncStorage.setItem('userId', response.data.id);
+        await AsyncStorage.setItem('userId', String(response.data.id));
         await AsyncStorage.setItem('username', response.data.username);
         // const token = await AsyncStorage.getItem('accessToken');
         // alert(token);

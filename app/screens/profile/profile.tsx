@@ -198,7 +198,7 @@ const ProfileScreen = () => {
       const token = await AsyncStorage.getItem("accessToken");
       const userId = await AsyncStorage.getItem("userId");
       const response :any = await updateUser(token, userId, {fullName: fullName,email: email,phone: phoneNumber});
-      console.log(response);
+
       if (response && response.status == 200) {
         alert("Cập nhật thông tin thành công!");
       }

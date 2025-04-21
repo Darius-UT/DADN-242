@@ -20,6 +20,9 @@ import { Add_Circle, Cross_Symbol } from "../ui/IconSymbol";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import ModalAddRule from "./ModalAddRule";
+import { getStatusDevice, updateStatusDevice } from "@/services/device.service";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 
 
@@ -43,16 +46,7 @@ const ManualModeArea: React.FC<{ selectedTab: 'manual' | 'auto'; setSelectedTab:
     const [myDate, setDate] = useState(new Date());
     const [myTime, setTime] = useState(new Date());
 
-    const AlertWhenToggleMode = () => {
-        Alert.alert(
-            "Xác nhận",
-            "Khi chuyển sang chế độ thủ công, các thiết lập trong chế độ tự động sẽ tạm thời bị vô hiệu hóa.\n\nBạn vẫn muốn chuyển?",
-            [
-                { text: "Hủy", style: "cancel" },
-                { text: "Chuyển", style: "default", onPress: () => setSelectedTab('manual') }
-            ]
-        );
-    };
+   
 
     return (
         <View style={[
@@ -60,147 +54,13 @@ const ManualModeArea: React.FC<{ selectedTab: 'manual' | 'auto'; setSelectedTab:
             selectedTab === 'manual' && { opacity: 1 },
         ]}>
             <View style={DeviceControlModal_Style.modeContainer}>
-                <TouchableOpacity style={DeviceControlModal_Style.buttonModeContainer} onPress={selectedTab === 'auto' ? AlertWhenToggleMode : undefined} >
-                    <Text style={DeviceControlModal_Style.buttonModeText}>Chế độ thủ công</Text>
-                </TouchableOpacity>
+                
             </View>
 
-            {selectedTab === 'manual' &&
-                <View style={ManualModeArea_Style.contentContainer}>
-                    <Text style={{ margin: 5 }}>Chuyển sang chế độ tự động vào: </Text>
-
-                    <View style={ManualModeArea_Style.commonContainer}>
-                        <TouchableOpacity style={ManualModeArea_Style.dateContainer} onPress={() => setDateVisible(true)}>
-                            <Text style={ManualModeArea_Style.subTitleText}>Chọn ngày</Text>
-                            <Text style={ManualModeArea_Style.dateText} >{myDate.toLocaleDateString()}</Text>
-                        </TouchableOpacity>
-
-                        <TouchableOpacity style={ManualModeArea_Style.dateContainer} onPress={() => setTimeVisible(true)}>
-                            <Text style={ManualModeArea_Style.subTitleText}>Chọn giờ</Text>
-                            <Text style={ManualModeArea_Style.dateText} >{myTime.toLocaleTimeString()}</Text>
-                        </TouchableOpacity>
-                    </View>
-
-                    <DateTimePickerModal
-                        isVisible={isDateVisible}
-                        mode="date"
-                        onConfirm={(selectedDate) => {
-                            setDate(selectedDate);
-                            setDateVisible(false);
-                        }}
-                        onCancel={() => setDateVisible(false)}
-                    />
-                    <DateTimePickerModal
-                        isVisible={isTimeVisible}
-                        mode="time"
-                        onConfirm={(selectedTime) => {
-                            setTime(selectedTime);
-                            setTimeVisible(false);
-                        }}
-                        onCancel={() => setTimeVisible(false)}
-                    />
-                </View>
-            }
         </View>
     );
 };
 
-
-// COPONENT: Chế độ tự động
-const AutoModeArea:
-    React.FC<{
-        selectedTab: 'manual' | 'auto';
-        setSelectedTab: React.Dispatch<React.SetStateAction<'manual' | 'auto'>>;
-        deviceName: string,
-        deviceSymbol: string
-    }> = ({
-        selectedTab,
-        setSelectedTab,
-        deviceName,
-        deviceSymbol
-    }) => {
-
-        const [add_rule_modal_visible, set_add_rule_modal_visible] = useState<boolean>(false);
-
-        const AlertWhenDeleteRule = () => {
-            Alert.alert(
-                "Xác nhận",
-                "Bạn chắc chắn muốn xóa quy tắc này?",
-                [
-                    { text: "Hủy", style: "cancel" },
-                    { text: "Xóa", style: "destructive" },
-                ],
-                { cancelable: true }
-            );
-        };
-
-        const AlertWhenToggleMode = () => {
-            Alert.alert(
-                "Xác nhận",
-                "Khi chuyển sang chế độ tự động, các thiết lập trong chế độ thủ công sẽ tạm thời bị vô hiệu hóa.\n\nBạn vẫn muốn chuyển?",
-                [
-                    { text: "Hủy", style: "cancel" },
-                    { text: "Chuyển", style: "default", onPress: () => setSelectedTab('auto') }
-                ]
-            );
-        };
-
-        // Template cho mỗi thẻ Quy tắc
-        const Template_rule_card = ({ index = "0", content_rule = "Nội dung quy tắc" }: { index: string; content_rule?: string }) => {
-            return (
-                <View style={AutoModeArea_Style.overallContainer}>
-                    <View style={AutoModeArea_Style.headerCardContainer}>
-                        <Text style={{ fontWeight: "bold" }}>Quy tắc {index}</Text>
-                        <TouchableOpacity style={{ marginTop: -5 }} onPress={AlertWhenDeleteRule}>
-                            <Cross_Symbol />
-                        </TouchableOpacity>
-                    </View>
-
-                    <View style={AutoModeArea_Style.content_rule_container}>
-                        <Text style={AutoModeArea_Style.content_rule_text}>{content_rule}</Text>
-                    </View>
-                </View>
-            );
-        };
-
-        // Khu vực code chính
-        return (
-            <View style={[
-                { opacity: 0.4 },
-                selectedTab === 'auto' && { opacity: 1 },
-            ]}>
-                <View style={DeviceControlModal_Style.modeContainer}>
-                    <TouchableOpacity style={DeviceControlModal_Style.buttonModeContainer} onPress={selectedTab === 'manual' ? AlertWhenToggleMode : undefined}>
-                        <Text style={DeviceControlModal_Style.buttonModeText}>Chế độ tự động</Text>
-                    </TouchableOpacity>
-                </View>
-
-                {selectedTab === 'auto' &&
-                    <View>
-                        <View style={AutoModeArea_Style.headerContainer}>
-                            <Text style={AutoModeArea_Style.titleText}>Các quy tắc đã thiết lập</Text>
-                            <TouchableOpacity onPress={() => set_add_rule_modal_visible(true)}>
-                                <Add_Circle />
-                            </TouchableOpacity>
-
-                        </View>
-
-                        <FlatList
-                            data={Rule_Data}
-                            keyExtractor={(item) => item.id}
-                            renderItem={({ item }) => (
-                                <Template_rule_card index={item.id} content_rule={"Nếu cảm biến " + item.sensor + " có giá trị trong khoảng " + item.range + ", thì " + item.action + " " + deviceName.toLocaleLowerCase() + " " + deviceSymbol} />
-                            )}
-                            scrollEnabled={true}
-                            style={{ height: 300 }}
-                        />
-                    </View>}
-
-                {/* Modal thêm quy tắc */}
-                {/* <ModalAddRule visible={add_rule_modal_visible} setVisible={set_add_rule_modal_visible} rule_index={(Rule_Data.length + 1).toLocaleString()} deviceName={deviceName}/> */}
-            </View>
-        )
-    };
 
 
 interface deviceControlProps {
@@ -209,10 +69,12 @@ interface deviceControlProps {
 
     deviceName: string;
     deviceSymbol: string;
+    
 };
 
 // HÀM CHÍNH
-const DeviceControlModal: React.FC<deviceControlProps> = ({ visible, setVisible, deviceName, deviceSymbol }) => {
+const SensorModal: React.FC<deviceControlProps> = ({ visible, setVisible, deviceName, deviceSymbol }) => {
+    
     const AlertWhenCancel = () => {
         Alert.alert(
             "Cảnh báo",
@@ -224,10 +86,60 @@ const DeviceControlModal: React.FC<deviceControlProps> = ({ visible, setVisible,
             { cancelable: true }
         )
     };
-
     const [isEnable, setIsEnable] = useState<boolean>(true);
-    const [selectedTab, setSelectedTab] = useState<'manual' | 'auto'>('auto');
+    const [selectedTab, setSelectedTab] = useState<'manual' | 'auto'>('manual');
 
+    React.useEffect(() => {
+        const getStatus = async () => {
+            try {
+                const token = await AsyncStorage.getItem('accessToken');
+                if (!token) throw new Error('No token');
+
+                const res = await getStatusDevice(token, deviceSymbol);
+                console.log("getStatusDevice res:", res);
+                if(res.data == "ENABLE") {
+                    setIsEnable(true);
+                }
+                else if(res.data == "DISABLE") {
+                    setIsEnable(false);
+                }
+            } catch (e) {
+                console.log('getStatusDevice error:', e);
+            }
+        };
+        getStatus();
+    }
+    , [deviceSymbol]);
+
+    const handleSave = async () => {
+        console.log("Saving...");
+        
+        try {
+          const token = await AsyncStorage.getItem('accessToken');
+          if (!token) throw new Error('No token');
+    
+          const res = await updateStatusDevice(token, isEnable, deviceSymbol);
+        
+            
+          Toast.show({
+            type: 'info',
+            text1: 'Thành công',
+            text2: 'Đã cập nhật trạng thái thiết bị.',
+            visibilityTime: 2000,
+            position: 'top',
+          });
+          setVisible(false);               // đóng modal sau khi lưu
+        } catch (e) {
+          Toast.show({
+            type: 'info',
+            text1: 'Lỗi',
+            text2: 'Cập nhật thất bại!',
+            visibilityTime: 2000,
+            position: 'top',
+          });
+          console.log('updateStatusDevice error:', e);
+        }
+      };
     return (
         <Modal
             isVisible={visible}
@@ -270,15 +182,14 @@ const DeviceControlModal: React.FC<deviceControlProps> = ({ visible, setVisible,
                 {/* Khu vực chế độ thủ công */}
                 <ManualModeArea selectedTab={selectedTab} setSelectedTab={setSelectedTab} />
 
-                {/* Khu vực chế độ tự động */}
-                <AutoModeArea selectedTab={selectedTab} setSelectedTab={setSelectedTab} deviceName={deviceName} deviceSymbol={deviceSymbol} />
+                
 
                 {/* Nút THOÁT + SAVE */}
                 <View style={DeviceControlModal_Style.cancel_save_button_container}>
                     <TouchableOpacity style={[DeviceControlModal_Style.buttonModeContainer, DeviceControlModal_Style.cancel_button_container]} onPress={() => AlertWhenCancel()}>
                         <Text style={[DeviceControlModal_Style.buttonModeText, { color: COLORS.textPrimary }]}>Thoát</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[DeviceControlModal_Style.buttonModeContainer, DeviceControlModal_Style.save_button_container]} onPress={() => setVisible(false)}>
+                    <TouchableOpacity style={[DeviceControlModal_Style.buttonModeContainer, DeviceControlModal_Style.save_button_container]} onPress={handleSave}>
                         <Text style={DeviceControlModal_Style.buttonModeText}>Lưu</Text>
                     </TouchableOpacity>
                 </View>
@@ -288,7 +199,7 @@ const DeviceControlModal: React.FC<deviceControlProps> = ({ visible, setVisible,
     )
 };
 
-export default DeviceControlModal
+export default SensorModal
 
 
 

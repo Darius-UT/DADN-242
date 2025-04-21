@@ -10,6 +10,8 @@ import { ScrollView, TextInput } from "react-native-gesture-handler";
 import { Checkbox } from "react-native-paper";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import Toast from "react-native-toast-message";
+import { createConditionRule, createRule } from "@/services/rule.service";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 // Dữ liệu dropBox chọn Cảm biến (dạng rời rạc)
@@ -31,7 +33,22 @@ const Action_SelectList_Data_Official = [
     { key: "2", value: "Tắt" },
 ]
 
-
+const formatSensorList = (raw: any[]) => {
+    const viMap: Record<string, string> = {
+      LIGHT:          "Cảm biến ánh sáng",
+      TEMPERATURE:    "Cảm biến nhiệt độ",
+      HUMIDITY:       "Cảm biến độ ẩm",
+      SOIL_MOISTURE:  "Cảm biến độ ẩm đất",
+    };
+  
+    return raw
+      .filter(d => d.type === "SENSOR" && d.status === "ENABLE")     // chỉ sensor & ENABLE
+      .map((d, idx) => ({
+        id:            (idx + 1).toString(),                         // "1", "2", …
+        sensorType:    viMap[d.subType] ?? "Cảm biến khác",          // ánh xạ sang TV
+        sensorSymbol:  d.feedName,                                   // giữ nguyên feedName
+      }));
+  };
 
 
 
@@ -41,9 +58,11 @@ interface ModalAddRule_props {
 
     rule_index: string;
     deviceName: string;
+    deviceSymbol: string;
+    sensorList: any;
 };
 
-const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_index = "1", deviceName = "defaultName" }) => {
+const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_index, deviceName,deviceSymbol, sensorList }) => {
     // useState SelectList chọn cảm biến: sensorSelection lưu trữ tên Cảm biến hiện tại.
     const [sensorSelection, setSensorSelection] = useState<string>("")
 
@@ -57,6 +76,11 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
     // useState đánh dấu upperBound là +inf
     const [positive_inf, setPositive_inf] = useState<boolean>(false);
 
+    const formattedSensorList = formatSensorList(sensorList); // Định dạng lại danh sách cảm biến để hiển thị trong SelectList
+    const formattedSensorList_Official = formattedSensorList.map((sensor) => ({
+        key: sensor.id,
+        value: `${sensor.sensorType} (${sensor.sensorSymbol})`,
+    }));
     // Hàm hiển thị thân thiện người dùng kết quả của Miền giá trị
     const handleShowRangeValue = () => {
         let left: string = "";
@@ -73,10 +97,10 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
     // useState DateTime Picker:
     // // Giờ bắt đầu
     const [isStartTimeVisible, setStartTimeVisible] = useState<boolean>(false);
-    const [startTimePicker, setStartTimePicker] = useState<Date>(new Date());
+    const [startTimePicker, setStartTimePicker] = useState<Date>(new Date(0, 0, 0, 0, 0, 0, 0));
     // // Giờ kết thúc
     const [isEndTimeVisible, setEndTimeVisible] = useState<boolean>(false);
-    const [endTimePicker, setEndTimePicker] = useState<Date>(new Date());
+    const [endTimePicker, setEndTimePicker] = useState<Date>(new Date(0, 0, 0, 23, 59, 59, 0));
 
 
     const AlertWhenCancel = () => {
@@ -91,6 +115,48 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
         )
     };
 
+    const handleAdd = async () => {
+        // Kiểm tra xem người dùng đã nhập đủ thông tin chưa
+        console.log("Thêm mới quy tắc: ", {
+            sensorSelection,
+            lowerBound,
+            upperBound,
+            negative_inf,
+            positive_inf,
+            action,
+            startTimePicker,
+            endTimePicker,
+        });
+        if (sensorSelection === "" || action === "") {
+            Toast.show({
+                type: 'error',
+                text1: 'Vui lòng nhập đầy đủ thông tin',
+                visibilityTime: 3000,
+                position: 'top',
+            });
+            return;
+        }
+        const sensor_feedname   = formattedSensorList.find(s => s.id === sensorSelection)?.sensorSymbol;
+        var new_action = "";
+
+        if (action === "1") {
+            new_action = deviceSymbol + "/on";
+        }
+        else if (action === "2") {
+            new_action = deviceSymbol + "/off"; 
+        }
+
+        const res = await createRule( new_action , sensor_feedname) 
+
+        let lowerBoundReq = lowerBound;
+        let upperBoundReq = upperBound;
+        if(negative_inf) lowerBoundReq = "9999";
+        if(positive_inf) upperBoundReq = "9999";
+        const res2 = await createConditionRule("testrule", lowerBoundReq, upperBoundReq, startTimePicker, endTimePicker, res?.data?.id);
+        console.log(res2);
+        
+        setVisible(false);
+    }
 
     return (
         <Modal
@@ -111,7 +177,7 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
                 <View style={[ModalAddRule_Style.subContainer, { zIndex: 999 }]}>
                     <Text style={ModalAddRule_Style.subText}>Nếu:</Text>
                     <SelectList
-                        data={Sensor_SelectList_Data_Official}
+                        data={formattedSensorList_Official}
                         setSelected={(myChoice: string) => setSensorSelection(myChoice)}
                         searchPlaceholder="Tìm từ khóa của cảm biến"
                         placeholder="Chọn một cảm biến"
@@ -201,11 +267,11 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <TouchableOpacity style={ModalAddRule_Style.timePickerContainer} onPress={() => setStartTimeVisible(true)}>
                             <Text style={ModalAddRule_Style.timePickerText}>Giờ bắt đầu</Text>
-                            <Text style={ModalAddRule_Style.timeText}>{startTimePicker.toLocaleTimeString()}</Text>
+                            <Text style={ModalAddRule_Style.timeText}>{startTimePicker.toISOString()}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={ModalAddRule_Style.timePickerContainer} onPress={() => setEndTimeVisible(true)}>
                             <Text style={ModalAddRule_Style.timePickerText}>Giờ kết thúc</Text>
-                            <Text style={ModalAddRule_Style.timeText}>{endTimePicker.toLocaleTimeString()}</Text>
+                            <Text style={ModalAddRule_Style.timeText}>{endTimePicker.toISOString()}</Text>
                         </TouchableOpacity>
                     </View>
 
@@ -243,7 +309,7 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
 
                 {/* Nút Thêm mới + Hủy */}
                 <View style={{ paddingHorizontal: 15, marginTop: 20, rowGap: 8 }}>
-                    <TouchableOpacity style={ModalAddRule_Style.addButtonContainer} onPress={() => setVisible(false)}>
+                    <TouchableOpacity style={ModalAddRule_Style.addButtonContainer} onPress={handleAdd}>
                         <Text style={ModalAddRule_Style.addButtonText}>Thêm mới</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[ModalAddRule_Style.cancelButtonContainer]} onPress={AlertWhenCancel}>

@@ -1,5 +1,5 @@
 import Top_Header from "@/components/common/Top_Header";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     TouchableOpacity
 } from "react-native-gesture-handler";
@@ -12,53 +12,38 @@ import { SafeAreaView, SectionList, } from "react-native";
 import { COLORS } from "@/constants/Colors";
 import { ArrowUp, ArrowDown } from "@/components/ui/IconSymbol";
 import DeviceControlModal from "@/components/common/ModalDeviceControl";
+
+import SensorModal    from "@/components/common/ModalSensorControl";
+import ActuatorModal  from "@/components/common/ModalActuatorControl";
+
 import { useRoute } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getDevicesByArea } from "@/services/area.service";
 
-
-const deviceData = [
-    {
-        title: "Nhóm kiểm soát môi trường",
-        data: [
-            { id: "1", type: "Quạt thông gió", symbol: "A-F1", mode: "Thủ công" },
-            { id: "2", type: "Quạt thông gió", symbol: "A-F2", mode: "Thủ công" },
-            { id: "3", type: "Quạt thông gió", symbol: "A-F3", mode: "Tự động" },
-            { id: "4", type: "Quạt thông gió", symbol: "A-F4", mode: "Thủ công" },
-        ]
-    },
-    {
-        title: "Nhóm chiếu sáng",
-        data: [
-            { id: "1", type: "Đèn LED", symbol: "A-L1", mode: "Thủ công" },
-            { id: "2", type: "Đèn LED", symbol: "A-L2", mode: "Thủ công" },
-            { id: "3", type: "Đèn LED", symbol: "A-L3", mode: "Tự động" },
-            { id: "4", type: "Đèn LED", symbol: "A-L4", mode: "Thủ công" },
-            { id: "5", type: "Đèn LED", symbol: "A-L5", mode: "Thủ công" },
-            { id: "6", type: "Đèn LED", symbol: "A-L6", mode: "Thủ công" },
-        ]
-    },
-    {
-        title: "Nhóm tưới tiêu",
-        data: [
-            { id: "1", type: "Máy bơm", symbol: "A-P1", mode: "Tự động" },
-            { id: "2", type: "Máy bơm", symbol: "A-P2", mode: "Thủ công" },
-            { id: "3", type: "Máy bơm", symbol: "A-P3", mode: "Thủ công" },
-            { id: "4", type: "Máy bơm", symbol: "A-P4", mode: "Thủ công" },
-            { id: "5", type: "Máy bơm", symbol: "A-P5", mode: "Thủ công" },
-            { id: "6", type: "Máy bơm", symbol: "A-P6", mode: "Thủ công" },
-            { id: "7", type: "Máy bơm", symbol: "A-P7", mode: "Thủ công" },
-            { id: "8", type: "Máy bơm", symbol: "A-P8", mode: "Thủ công" },
-            { id: "9", type: "Máy bơm", symbol: "A-P9", mode: "Thủ công" },
-        ]
-    }
-];
 
 
 const DeviceAreaScreen = () => {
     // tham số
     const myRoute = useRoute<any>();
-    const { areaName } = myRoute.params;
+    const { areaId, areaName } = myRoute.params as { areaId: number | string; areaName: string };
 
-
+    const [deviceGroups, setDeviceGroups] = useState<any[]>([]);
+    const [sensorList, setSensorList] = useState<any[]>([]);
+    React.useEffect(() => {
+        (async () => {
+          try {
+            const token = await AsyncStorage.getItem("accessToken");
+            const res   = await getDevicesByArea(areaId, token);  // ← API của bạn
+            setDeviceGroups([
+                      { title: "Nhóm cảm biến",        data: res.data.filter((d: any) => d.type === "SENSOR") },
+                      { title: "Nhóm cơ cấu chấp hành", data: res.data.filter((d: any) => d.type === "ACTUATOR") },
+                    ]);
+            setSensorList(res.data.filter((d:any)=> d.type === "SENSOR"));       
+          } catch (err) {
+            console.log("Không tải được danh sách thiết bị:", err);
+          }
+        })();
+      }, [areaId]);
     const navigation = useNavigation<any>();
 
     // UseState cho việc thu-phóng danh sách các nhóm thiết bị
@@ -80,12 +65,13 @@ const DeviceAreaScreen = () => {
 
     // UseState cho việc mở/đóng modal Cấu hình thiết bị
     const [modalVisible, setModalVisible] = useState<boolean>(false)
-
+    const [currentModalType, setCurrentModalType] = useState<"SENSOR"|"ACTUATOR"|"">("");
     const [currentDevice, setCurrentDevice] = useState<{ name: string; symbol: string }>({ name: "", symbol: "" });
 
-    const toggleDeviceModal = (name: string, symbol: string) => {
+    const toggleDeviceModal = (name: string, symbol: string,type: "SENSOR" | "ACTUATOR") => {
         setModalVisible(() => {
             setCurrentDevice({name, symbol})
+            setCurrentModalType(type);
             return true
         });
     }
@@ -118,22 +104,36 @@ const DeviceAreaScreen = () => {
                     style={{ height: "85%" }}
                     showsVerticalScrollIndicator={false}
                     contentContainerStyle={DeviceAreaScreen_Style.default.sectionListContainer}
-                    sections={deviceData}
+                    sections={deviceGroups}
                     keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item, section }) => (
-                        <View>
-                            {expand.has(section.title) && (<View>
-                                <View style={DeviceAreaScreen_Style.deviceListTemplate_Style.listContainer}>
-                                    <Text style={[DeviceAreaScreen_Style.deviceListTemplate_Style.cellContainer, { width: "35%" }]}>{item.type}</Text>
-                                    <Text style={DeviceAreaScreen_Style.deviceListTemplate_Style.cellContainer}>{item.symbol}</Text>
-                                    <Text style={DeviceAreaScreen_Style.deviceListTemplate_Style.cellContainer}>{item.mode}</Text>
-                                    <TouchableOpacity style={{ alignItems: "center" }} containerStyle={DeviceAreaScreen_Style.deviceListTemplate_Style.cellContainer} onPress={()=>toggleDeviceModal(item.type, item.symbol)}>
-                                        <Text style={[{ color: COLORS.secondary }]}>Chi tiết</Text>
-                                    </TouchableOpacity>
-                                </View>
-                            </View>)}
-                        </View>
-                    )}
+                    //ToDo render item
+                     renderItem={({ item, section }) => {
+                           if (!expand.has(section.title)) return null;   // nhóm đang đóng → không vẽ item
+                           return (
+                             <View style={DeviceAreaScreen_Style.deviceListTemplate_Style.listContainer}>
+                               <Text
+                                 style={[
+                                   DeviceAreaScreen_Style.deviceListTemplate_Style.cellContainer,
+                                   { width: "35%" },
+                                 ]}
+                           >
+                                 {item.deviceName}
+                               </Text>
+                        
+                               <Text style={DeviceAreaScreen_Style.deviceListTemplate_Style.cellContainer}>
+                                 {item.feedName}
+                               </Text>
+                               
+                        
+                               <TouchableOpacity
+                                
+                                 onPress={() => toggleDeviceModal(item.deviceName, item.feedName, item.type as "SENSOR"|"ACTUATOR") }
+                               >
+                                 <Text style={{ color: COLORS.secondary }}>Chi tiết</Text>
+                               </TouchableOpacity>
+                             </View>
+                           );
+                         }}
                     renderSectionHeader={({ section: { title } }) => (
                         <View>
                             <TouchableOpacity style={DeviceAreaScreen_Style.deviceListTemplate_Style.typeBarContainer} onPress={() => toggleExpand(title)}>
@@ -145,15 +145,32 @@ const DeviceAreaScreen = () => {
                             {expand.has(title) && <View style={DeviceAreaScreen_Style.deviceListTemplate_Style.listContainer}>
                                 <Text style={[DeviceAreaScreen_Style.deviceListTemplate_Style.cellContainer, { width: "35%", fontFamily: "Roboto-SemiBold" }]}>Tên thiết bị</Text>
                                 <Text style={[DeviceAreaScreen_Style.deviceListTemplate_Style.cellContainer, { fontFamily: "Roboto-SemiBold" }]}>Ký hiệu</Text>
-                                <Text style={[DeviceAreaScreen_Style.deviceListTemplate_Style.cellContainer, { fontFamily: "Roboto-SemiBold" }]}>Chế độ</Text>
                                 <Text style={[DeviceAreaScreen_Style.deviceListTemplate_Style.cellContainer, { fontFamily: "Roboto-SemiBold" }]}>Cấu hình</Text>
                             </View>}
                         </View>
                     )}
                 />
+                {currentModalType === "SENSOR" && (
+                                            <SensorModal
+                                                visible={modalVisible}
+                                                setVisible={setModalVisible}
+                                                deviceName={currentDevice.name}
+                                                deviceSymbol={currentDevice.symbol}
+                                                
+                                            />
+                                            )}
 
+                                            {currentModalType === "ACTUATOR" && (
+                                            <ActuatorModal
+                                                visible={modalVisible}
+                                                setVisible={setModalVisible}
+                                                deviceName={currentDevice.name}
+                                                deviceSymbol={currentDevice.symbol}
+                                                sensorList={sensorList}
+                                            />
+                                            )}
                 {/* Modal cấu hình thiết bị */}
-                <DeviceControlModal visible={modalVisible} setVisible={setModalVisible} deviceName={currentDevice.name} deviceSymbol={currentDevice.symbol}/>
+                {/* <DeviceControlModal visible={modalVisible} setVisible={setModalVisible} deviceName={currentDevice.name} deviceSymbol={currentDevice.symbol } sensorList={sensorList}/> */}
             </View>
         </SafeAreaView>
     );
