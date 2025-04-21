@@ -1,7 +1,7 @@
 import { COLORS } from "@/constants/Colors";
 import { TYPOGRAPHY } from "@/constants/Fonts";
 import globalStyle from "@/styles/global";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     StyleSheet,
     View,
@@ -20,6 +20,10 @@ import { Add_Circle, Cross_Symbol } from "../ui/IconSymbol";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import ModalAddRule from "./ModalAddRule";
+import { handleUrlParams } from "expo-router/build/fork/getStateFromPath-forks";
+import { Client } from "@stomp/stompjs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { deleteConditionRule, deleteRule, getRulesAndConditionRulesByAction } from "@/services/api.service";
 
 
 
@@ -93,20 +97,113 @@ const AutoModeArea:
         
         
         const [add_rule_modal_visible, set_add_rule_modal_visible] = useState<boolean>(false);
-
-        const AlertWhenDeleteRule = () => {
+        const [Rule_Data, setRule_Data] = useState<any[]>([]); // State for API data
+        const [error, setError] = useState<string | null>(null);
+        const [del, setDel] = useState<boolean>(false);
+        function formatBound(v: number) {
+            if (v >= 9999) return 'inf';
+            if (v <= -9999) return '-inf';
+            return v;
+          }
+        function transformToRuleData(rules:any[]) {
+            const Rule_Data:any[] = [];
+            let idCounter = 1;
+          
+            rules.forEach(rule => {
+              // Tên sensor
+              const sensor = rule.feedName;
+              // Lấy phần on/off
+              const action = rule.action.split('/')[1];
+          
+              // Tên trường condition có thể là conditionrules hoặc conditionRuleResponses
+              const conditions:any[] = rule.conditionRuleResponses
+          
+              conditions.forEach(cond => {
+                // Tạo chuỗi range dưới dạng "[min, max]"
+                const minStr = formatBound(cond.minValue);
+                const maxStr = formatBound(cond.maxValue);
+                const range = `[${minStr}, ${maxStr}]`;
+                
+                Rule_Data.push({
+                  id: rule.id,
+                  sensor,
+                  range,
+                  action: action==="on" ? "bật" : "tắt"
+                });
+          
+                idCounter++;
+              });
+            });
+          
+            return Rule_Data;
+          }
+    
+        // Fetch rules from API when component mounts or deviceSymbol changes
+        useEffect(() => {
+            const fetchRules = async () => {
+                try {
+                    const token = await AsyncStorage.getItem('accessToken');
+                    if (!token) {
+                        setError('No token found. Please log in.');
+                        return;
+                    }
+    
+                    const response = await getRulesAndConditionRulesByAction(token, deviceSymbol);
+                    const rulesArray = response.data; // Extract the rules array
+                    if (!rulesArray) {
+                        setError('No rules found for this device and zone.');
+                        return;
+                    }
+    
+                    const transformedData = transformToRuleData(rulesArray);
+                    setRule_Data(transformedData);
+                    setError(null);
+                } catch (err: any) {
+                    console.error('Error fetching rules:', err);
+                    if (err.response?.status === 404) {
+                        setError('No rules found for this device and zone.');
+                        setRule_Data([]); // Clear data on 404
+                    } else if (err.response?.status === 401) {
+                        setError('Session expired. Please log in again.');
+                    } else {
+                        setError('Failed to fetch rules. Please try again.');
+                    }
+                }
+            };
+    
+            if (selectedTab === 'auto') {
+                fetchRules(); // Fetch rules when in auto mode
+            }
+        }, [selectedTab, deviceSymbol, add_rule_modal_visible, del]); // Re-fetch if tab or deviceSymbol changes
+        const AlertWhenDeleteRule = (index: string) => {
             Alert.alert(
                 "Xác nhận",
                 "Bạn chắc chắn muốn xóa quy tắc này?",
                 [
                     { text: "Hủy", style: "cancel" },
-                    { text: "Xóa", style: "destructive" },
+                    { text: "Xóa", style: "destructive", onPress: () => handleDeleteRule(index) },
                 ],
                 { cancelable: true }
             );
         };
+        const handleDeleteRule = async (index: string) => {
+            try {
+                
+                const token = await AsyncStorage.getItem('accessToken');
+                if (!token) {
+                    setError('No token found. Please log in.');
+                    return;
+                }
 
-        const AlertWhenToggleMode = () => {
+                const response = await deleteRule(token, index);
+                
+                setDel(!del);
+                
+            } catch (error) {
+                console.error('Error deleting rule:', error);
+            }
+        }
+        const AlertWhenToggleMode =  () => {
             Alert.alert(
                 "Xác nhận",
                 "Khi chuyển sang chế độ tự động, các thiết lập trong chế độ thủ công sẽ tạm thời bị vô hiệu hóa.\n\nBạn vẫn muốn chuyển?",
@@ -122,8 +219,8 @@ const AutoModeArea:
             return (
                 <View style={AutoModeArea_Style.overallContainer}>
                     <View style={AutoModeArea_Style.headerCardContainer}>
-                        <Text style={{ fontWeight: "bold" }}>Quy tắc {index}</Text>
-                        <TouchableOpacity style={{ marginTop: -5 }} onPress={AlertWhenDeleteRule}>
+                        <Text style={{ fontWeight: "bold" }}>Quy tắc </Text>
+                        <TouchableOpacity style={{ marginTop: -5 }} onPress={() => AlertWhenDeleteRule(index)}>
                             <Cross_Symbol />
                         </TouchableOpacity>
                     </View>
@@ -202,6 +299,66 @@ const ActuatorModal: React.FC<deviceControlProps> = ({ visible, setVisible, devi
     const [isEnable, setIsEnable] = useState<boolean>(true);
     const [selectedTab, setSelectedTab] = useState<'manual' | 'auto'>('auto');
 
+    const handleOntoggle = async () =>{
+        if (selectedTab === 'manual') {
+            const token = await AsyncStorage.getItem('accessToken');
+            const wsUrl = `ws://192.168.1.10:9090/ws?token=${token}`;
+            let stompClient: Client;
+            stompClient = new Client({
+                forceBinaryWSFrames: true,
+                appendMissingNULLonIncoming: true,
+                brokerURL: wsUrl,
+                reconnectDelay: 5000,
+                debug: msg => console.log('[STOMP]', msg),
+                onConnect: (frame: any) => {
+                        console.log('STOMP Connected:', frame);
+                        let val = 0;
+                        if (isEnable && deviceSymbol.split("-")[0] == "pump") {
+                            val = 1; // tat may bom 
+                        }
+                        else if (isEnable && deviceSymbol.split("-")[0] == "servo") {
+                            val = 3; // tat servo
+                        } 
+                        else if (!isEnable && deviceSymbol.split("-")[0] == "pump") {
+                            val = 2; // bat may bom
+                        }
+                        else if (!isEnable && deviceSymbol.split("-")[0] == "servo") {
+                            val = 4; // bat servo
+                        }
+
+                        const msg: any = {
+                            feedName: deviceSymbol,
+                            value: val,
+                            timestamp: new Date().toISOString(),
+                        };
+                        console.log(msg);
+                        stompClient.publish({
+                            destination: '/app/chat',
+                            body: JSON.stringify(msg),
+                        })
+                    setIsEnable(!isEnable);
+
+            },
+                onStompError: err => console.error('STOMP error', err),
+            });
+
+
+             stompClient.activate();
+           
+            
+            
+        } else {
+            Toast.show({
+                type: 'info',
+                text1: 'Cảnh báo',
+                text2: 'Chức năng chỉ khả dụng khi ở chế độ thủ công.',
+                visibilityTime: 2000,
+                position: 'top',
+            });
+        }
+
+    }
+
     return (
         <Modal
             isVisible={visible}
@@ -223,20 +380,8 @@ const ActuatorModal: React.FC<deviceControlProps> = ({ visible, setVisible, devi
                             label={isEnable ? "Bật" : "Tắt"}
                             labelStyle={{ fontWeight: "400", fontSize: TYPOGRAPHY.baseFontSize }}
                             size="medium"
-                            onToggle={() => {
-                                if (selectedTab === 'manual') {
-                                    setIsEnable(!isEnable);
-                                    
-                                } else {
-                                    Toast.show({
-                                        type: 'info',
-                                        text1: 'Cảnh báo',
-                                        text2: 'Chức năng chỉ khả dụng khi ở chế độ thủ công.',
-                                        visibilityTime: 2000,
-                                        position: 'top',
-                                    });
-                                }
-                            }}
+                            onToggle={handleOntoggle
+                            }
                             animationSpeed={100}
                         />
                     </View>

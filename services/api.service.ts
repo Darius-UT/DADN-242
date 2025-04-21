@@ -189,12 +189,24 @@ const deleteConditionRule = (token:any, id:any) => {
     return axios.delete(URL_BACKEND, config)
 }
 
+const getRulesAndConditionRulesByAction = (token: any, deviceSymbol: string) => {
 
+    const actuatorName = deviceSymbol.split("-")[0]
+    const zoneId = deviceSymbol.split("-")[1]
+
+    const URL_BACKEND = `api/v1/rules/getRulesAndConditionRulesByAction/${actuatorName}/${zoneId}`;
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+    return axios.get(URL_BACKEND, config);
+};
 
 
 export {loginAPI, getUser, sendOTP, resetPassword, 
     updateUser, addUser, getUserByRole, addDevice, 
     addZone,getAllZones , getAllHistoryLogs, deleteUser
     , addRule, getRulesByDevice, updateRule, deleteRule,
-    addConditionRule, getConditionRuleByRuleId, updateConditionRule, deleteConditionRule
+    addConditionRule, getConditionRuleByRuleId, updateConditionRule, deleteConditionRule, getRulesAndConditionRulesByAction
 };

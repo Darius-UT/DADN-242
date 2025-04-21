@@ -4,7 +4,18 @@ import React from 'react';
 import { View, Text } from 'react-native';
 import Svg, { Path, Circle, Line } from 'react-native-svg';
 
-const GaugeChart = ({ value = 30, min = 0, max = 100, unit = "°C", name = "Biểu đồ"}) => {
+const GaugeChart = ({ id = "temp", value = 30, min = 0, max = 100, unit = "°C", name = "Biểu đồ"}) => {
+  const sensorType = id?.split('-')[0];   // 'soil', 'light', 'airm', 'temp', ...
+  
+  const autoUnit = {
+    airm : '%',
+    soil : '%',
+    light: ' Lux',
+    temp : '°C',
+  }[sensorType] ?? '';
+  
+  const finalUnit = autoUnit ?? unit;
+
   const radius = 80;
   const strokeWidth = 15;
   const centerX = 100;
@@ -50,7 +61,7 @@ const GaugeChart = ({ value = 30, min = 0, max = 100, unit = "°C", name = "Bi�
 
       {/* Giá trị hiển thị */}
       <Text style={{ fontSize: TYPOGRAPHY.subTitleFontSize, fontWeight: 'bold', marginTop: -10 }}>
-        {value}{unit}
+        {value}{finalUnit}
       </Text>
 
       <Text style={{ fontSize: TYPOGRAPHY.baseFontSize + 2, fontWeight: 'bold', marginTop: -10, color: COLORS.textPrimary, paddingTop: 10 }}>{name}</Text>

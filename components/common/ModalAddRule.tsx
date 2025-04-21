@@ -117,16 +117,7 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
 
     const handleAdd = async () => {
         // Kiểm tra xem người dùng đã nhập đủ thông tin chưa
-        console.log("Thêm mới quy tắc: ", {
-            sensorSelection,
-            lowerBound,
-            upperBound,
-            negative_inf,
-            positive_inf,
-            action,
-            startTimePicker,
-            endTimePicker,
-        });
+        
         if (sensorSelection === "" || action === "") {
             Toast.show({
                 type: 'error',
@@ -147,13 +138,22 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
         }
 
         const res = await createRule( new_action , sensor_feedname) 
+        
 
         let lowerBoundReq = lowerBound;
         let upperBoundReq = upperBound;
-        if(negative_inf) lowerBoundReq = "9999";
+        if(negative_inf) lowerBoundReq = "-9999";
         if(positive_inf) upperBoundReq = "9999";
         const res2 = await createConditionRule("testrule", lowerBoundReq, upperBoundReq, startTimePicker, endTimePicker, res?.data?.id);
-        console.log(res2);
+        if (res && res2) {
+            Toast.show({
+                type: 'success',
+                text1: 'Thành công',
+                text2: 'Thêm quy tác thành cồng',
+                visibilityTime: 2000,
+                position: 'top',
+            });
+        }
         
         setVisible(false);
     }

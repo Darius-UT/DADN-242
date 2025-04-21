@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
   ScrollView,
@@ -22,6 +22,7 @@ import { getAreas } from '@/services/area.service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import SockJS from 'sockjs-client';
 import { Client } from '@stomp/stompjs';
+import { getDeviceDataOneDay } from '@/services/dataObser.service';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -98,7 +99,7 @@ type Option = { key: string; value: string }
 const SENSOR_META = [
   { type: "temp",  label: "Nhiệt độ",          min: 0,   max: 100 },
   { type: "light", label: "Ánh sáng",          min: 0,   max: 10000 },
-  { type: "air",   label: "Độ ẩm không khí",   min: 0,   max: 100 },
+  { type: "airm",   label: "Độ ẩm không khí",   min: 0,   max: 100 },
   { type: "soil",  label: "Độ ẩm đất",         min: 0,   max: 100 },
 ];
 
@@ -301,6 +302,7 @@ const AverageData  = () => {
 const RealTimeChart:React.FC<{ zoneId: string }> = ({zoneId }) => {
   const navigation = useNavigation<any>();
   const [gauges, setGauges] = useState<Gauge[]>([]);
+  const [iselect , setIselect] = useState<boolean>(false);
   React.useEffect(() => {
     let stompClient: Client;
     if (!zoneId){
@@ -309,25 +311,16 @@ const RealTimeChart:React.FC<{ zoneId: string }> = ({zoneId }) => {
     }  
     setGauges(buildGauges(zoneId));
     (async () => {
-      
       console.log("Kết nối đến WebSocket...");
-      // 1. Lấy token
       const token = await AsyncStorage.getItem('accessToken');
-
-      // 2. Chọn host đúng cho emulator vs device
-      
-      // Ở Spring Boot SockJS endpoint mặc định bạn truy cập ws://.../ws/websocket
       const wsUrl = `ws://192.168.1.10:9090/ws?token=${token}`;
 
-      // 3. Khởi tạo STOMP Client
       stompClient = new Client({
         forceBinaryWSFrames: true,
         appendMissingNULLonIncoming: true,
-        // dùng brokerURL sẽ xài WebSocket native
         brokerURL: wsUrl,
         reconnectDelay: 5000,
         debug: msg => console.log('[STOMP]', msg),
-        // onConnect thay vì subscribe trong option
         onConnect: (frame: any) => {
           console.log('STOMP Connected:', frame);
           stompClient.subscribe('/topic/'+zoneId, (msg: any) => {
@@ -352,7 +345,7 @@ const RealTimeChart:React.FC<{ zoneId: string }> = ({zoneId }) => {
       // 4. Kích hoạt
       stompClient.activate();
     })();
-
+    setIselect(true);
     // Cleanup
     return () => {
       stompClient?.deactivate();
@@ -363,7 +356,10 @@ const RealTimeChart:React.FC<{ zoneId: string }> = ({zoneId }) => {
   return (
     <View>
       <View style={Home_Style.GeneraValue.subTitleTextContainer}>
-        <Text style={Home_Style.GeneraValue.subTitleText}>Biểu đồ thời gian thực</Text>
+        {!iselect ? (
+          <Text style={Home_Style.GeneraValue.subTitleText}>Chưa chọn khu vực</Text>
+          
+        ) : <Text style={Home_Style.GeneraValue.subTitleText}>Biểu đồ thời gian thực</Text>}
       </View>
 
       <ScrollView
@@ -374,7 +370,8 @@ const RealTimeChart:React.FC<{ zoneId: string }> = ({zoneId }) => {
       >
         {gauges.map(g => (
           <GaugeChart
-            key={g.id}
+            key={g.feed}
+            id={g.id}
             value={g.value}
             min={g.min}
             max={g.max}
@@ -383,15 +380,28 @@ const RealTimeChart:React.FC<{ zoneId: string }> = ({zoneId }) => {
         ))}
       </ScrollView>
 
-      <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("RealTime")} />
+      {/* <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("RealTime")} /> */}
     </View>
   );
 };
 
 // Thành phần 4: Biểu đồ xu hướng
-const TrendingChart = () => {
+const TrendingChart = (zoneId: any) => {
   const navigation = useNavigation<any>();
+  const res:any[] = [];
+  useEffect(() => {
+    async function fetchData() {
+      const token = await AsyncStorage.getItem('accessToken');
+      const feeds = ["airm", "light", "temp","soil" ]
 
+      for (const feed of feeds) {
+        const response = await getDeviceDataOneDay( feed+'-'+zoneId.toString());
+        res.push(response.data)
+      }
+      console.log(res);
+      
+    }
+  },[zoneId])
   return (
     <View>
       <View style={Home_Style.GeneraValue.subTitleTextContainer}>
@@ -399,10 +409,10 @@ const TrendingChart = () => {
       </View>
 
       <View style={DataObservation_Style.TrendingChart_Style.chartContainer}>
-        <LineChartTemplate dataSets={TemperatureDataSets} chartTitle={"Giá trị của cảm biến nhiệt độ giữa các khu vực."} />
+        <LineChartTemplate dataSets={TemperatureDataSets} chartTitle={"Giá trị của các cảm biến trong khu vực."} />
       </View>
 
-      <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("Trending")} />
+      {/* <SeeAll_Button name="Xem toàn bộ" onPressed={() => navigation.navigate("Trending")} /> */}
     </View>
   );
 };
@@ -486,14 +496,15 @@ const DataObservation = () => {
         {/* SelectList: Chọn khu vực */}
         <AreaSelectList onSelect={(id) => setSelectedZone(id)}  />
 
-        {/* Mục: Giá trị trung bình */}
-        <AverageData />
-
         {/* Mục: Biểu đồ thời gian thực */}
         <RealTimeChart zoneId={selectedZone}/>
 
+        {/* Mục: Giá trị trung bình */}
+        <AverageData />
+
         {/* Mục: Biểu đồ xu hướng */}
-        <TrendingChart />
+        <TrendingChart zoneId={selectedZone} />
+
 
         {/* Mục: Biểu đồ tỷ lệ vượt ngưỡng */}
         <OverThresoldChart areaName={"khu A"} />
