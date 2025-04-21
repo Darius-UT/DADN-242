@@ -1,7 +1,7 @@
 import { COLORS } from "@/constants/Colors";
 import { TYPOGRAPHY } from "@/constants/Fonts";
 import globalStyle from "@/styles/global";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     StyleSheet,
     View,
@@ -20,6 +20,8 @@ import { Add_Circle, Cross_Symbol } from "../ui/IconSymbol";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import Toast from "react-native-toast-message";
 import ModalAddRule from "./ModalAddRule";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getRulesAndConditionRulesByAction } from "@/services/api.service";
 
 
 
@@ -29,6 +31,46 @@ const Rule_Data = [
     { id: "3", sensor: "A-L1", range: "(-inf, 8900]", action: "tắt" },
     { id: "4", sensor: "A-S1", range: "[3, +inf)", action: "bật" },
 ]
+
+// {
+//     "statusCode": 200,
+//     "error": null,
+//     "message": "CALL API SUCCESS",
+//     "data": [
+//         {
+//             "id": 1,
+//             "action": "pump-1/on",
+//             "feedName": "light-1",
+//             "userId": 3,
+//             "conditionRuleResponses": [
+//                 {
+//                     "id": 1,
+//                     "name": "testrule",
+//                     "minValue": "9999",
+//                     "maxValue": "9999",
+//                     "startDate": "2025-04-21T16:34:20.152",
+//                     "endDate": "2025-04-21T16:34:20.152"
+//                 }
+//             ]
+//         },
+//         {
+//             "id": 3,
+//             "action": "pump-1/off",
+//             "feedName": "airm-1",
+//             "userId": 3,
+//             "conditionRuleResponses": [
+//                 {
+//                     "id": 3,
+//                     "name": "testrule",
+//                     "minValue": "9999",
+//                     "maxValue": "9999",
+//                     "startDate": "1899-12-30T17:17:56",
+//                     "endDate": "1899-12-31T17:17:55"
+//                 }
+//             ]
+//         }
+//     ]
+// }
 
 
 
@@ -91,8 +133,67 @@ const AutoModeArea:
         sensorList
     }) => {
         
-        
         const [add_rule_modal_visible, set_add_rule_modal_visible] = useState<boolean>(false);
+    const [Rule_Data, setRule_Data] = useState<any[]>([]); // State for API data
+    const [error, setError] = useState<string | null>(null);
+
+    const transformRuleData = (rulesArray: any) => {
+        return rulesArray.map((rule: any) => {
+            const condition = rule.conditionRuleResponses[0];
+            const min = parseFloat(condition.minValue);
+            const max = parseFloat(condition.maxValue);
+    
+            const rangeStart = min <= -9999 ? '(-inf, ' : `[${min}, `;
+            const rangeEnd = max >= 9999 ? '+inf)' : `${max}]`;
+            const range = rangeStart + rangeEnd;
+    
+            const actionType = rule.action.split('/')[1];
+            const actionMapped = actionType === 'on' ? 'bật' : actionType === 'off' ? 'tắt' : 'unknown';
+    
+            return {
+                id: rule.id.toString(),
+                sensor: rule.feedName,
+                range: range,
+                action: actionMapped,
+            };
+        });
+    };
+
+    // Fetch rules from API when component mounts or deviceSymbol changes
+    useEffect(() => {
+        const fetchRules = async () => {
+            try {
+                const token = await AsyncStorage.getItem('accessToken');
+                if (!token) {
+                    setError('No token found. Please log in.');
+                    return;
+                }
+
+                const response = await getRulesAndConditionRulesByAction(token, deviceSymbol);
+                console.log('API response:', response.data); // Log the entire response for debugging
+                const rulesArray = response.data; // Extract the rules array
+
+                console.log('Rules array:', rulesArray); // Log the rules array for debugging
+
+                const transformedData = transformRuleData(rulesArray);
+                setError(null);
+            } catch (err: any) {
+                console.error('Error fetching rules:', err);
+                if (err.response?.status === 404) {
+                    setError('No rules found for this device and zone.');
+                    setRule_Data([]); // Clear data on 404
+                } else if (err.response?.status === 401) {
+                    setError('Session expired. Please log in again.');
+                } else {
+                    setError('Failed to fetch rules. Please try again.');
+                }
+            }
+        };
+
+        if (selectedTab === 'auto') {
+            fetchRules(); // Fetch rules when in auto mode
+        }
+    }, [selectedTab, deviceSymbol]); // Re-fetch if tab or deviceSymbol changes
 
         const AlertWhenDeleteRule = () => {
             Alert.alert(
