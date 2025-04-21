@@ -23,6 +23,7 @@ const ModalAddZone: React.FC<ModalTemplateProps> = (props) => {
             setIsLoading(true);
             const token = await AsyncStorage.getItem('accessToken');
             const data = {
+                id: id,
                 name: name,
             };
             const response:any = await addZone(token,data);
@@ -47,6 +48,7 @@ const ModalAddZone: React.FC<ModalTemplateProps> = (props) => {
         }
     }
     const [name, setName] = useState("");
+    const [id, setId] = useState("");
     const resetModal = () => {
         setName("");
     }
@@ -67,6 +69,13 @@ const ModalAddZone: React.FC<ModalTemplateProps> = (props) => {
             ) : (
                 <ScrollView contentContainerStyle={ModalTemplate_Style.modalContainer}>
                 <View style={UserAddScreen_Style.default.textInputContainer}>
+                    <TextInputTemplate
+                    subTitle="Id*"
+                    placeHolder="Nhập Id khu vực"
+                    defaultValue={name}
+                    onChangeText={(text: string) => setId(text)}
+                    />
+
                     <TextInputTemplate
                     subTitle="Tên khu vực*"
                     placeHolder="Nhập tên khu vực"
