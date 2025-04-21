@@ -37,5 +37,54 @@ const updateUser = (token:any, id:any, data: any) => {
     return axios.put(URL_BACKEND, data, config)
 }
 
+const addUser = (token:any, data: any) => {
+    const URL_BACKEND = "api/v1/admin/users"
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.post(URL_BACKEND, data, config)
+}
 
-export {loginAPI, getUser, sendOTP, resetPassword, updateUser};
+const getUserByRole = (token:any, role:any) => {
+    const URL_BACKEND = `api/v1/admin/users/role/${role}`
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.get(URL_BACKEND, config)
+}
+
+const addDevice = (token:any, data: any) => {
+    const URL_BACKEND = "api/v1/devices/add_device"
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.post(URL_BACKEND, data, config)
+}
+
+const addZone = (token:any, data: any) => {
+    const URL_BACKEND = "api/v1/zone"
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.post(URL_BACKEND, data, config)
+}
+
+const getAllHistoryLogs = (token:any) => {
+    const URL_BACKEND = "api/v1/history-logs"
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    }
+    return axios.get(URL_BACKEND, config)
+}
+
+export {loginAPI, getUser, sendOTP, resetPassword, updateUser, addUser, getUserByRole, addDevice, addZone, getAllHistoryLogs};

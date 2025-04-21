@@ -3,26 +3,8 @@ import React from "react";
 import { ScrollView } from "react-native";
 import { UserBoxTemplate } from "./EngineerUserList";
 import * as AdminUserList_Style from "@/styles/screens/adminScreens/user_list/adminUserList";
-
-
-
-
-const AdminUserData = [
-    {
-        id: "1",
-        userName: "Huangfu_1204",
-        fullName: "Nguyễn Lê Hoàng Phúc Bành Thị Trương Thây",
-        sourceImage: "https://hoanghamobile.com/tin-tuc/wp-content/uploads/2024/03/anh-meme-hai.jpg"
-    },
-    {
-        id: "2",
-        userName: "KungfuPanda",
-        fullName: "Đinh Thị Ngọc Trân",
-        sourceImage: null, // Không có ảnh, sẽ dùng ảnh mặc định
-    },
-];
-
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { getUserByRole } from "@/services/api.service";
 
 
 
@@ -32,14 +14,37 @@ const AdminUserList_Screen = () => {
         "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
     });
 
+    const [data, setData] = React.useState([]);
+    const handleGetUser = async () => {
+        try{
+            const token = await AsyncStorage.getItem('accessToken');
+            const response:any = await getUserByRole(token, "Admin");
+            if (response && response.statusCode == 200) {
+                setData(response.data);
+            }
+            else {
+                alert("Lỗi lấy danh sách người dùng!");
+            }
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+    React.useEffect(() => {
+        handleGetUser();
+        console.log(data);
+    }, []);
+
     return (
         <ScrollView contentContainerStyle={AdminUserList_Style.default.overallContainer}>
-            {AdminUserData.map((element) => (
+            {data.map((element:any) => (
                 <UserBoxTemplate
                     key={element.id}
-                    userName={element.userName}
-                    fullName={element.fullName}
+                    userNameUser={element.username}
+                    fullNameUser={element.fullName}
                     sourceImage={element.sourceImage ?? undefined}
+                    dataElement={element} // Truyền dữ liệu người dùng vào UserBoxTemplate
                 />
             ))}
         </ScrollView>

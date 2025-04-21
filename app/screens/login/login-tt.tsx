@@ -20,20 +20,23 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 
-const Login_TT = () => {
+const Login_TT = (route:any ) => {
   const [] = useFonts({
     "TheNautigal-Bold": require("@/assets/fonts/The_Nautigal/TheNautigal-Bold.ttf"),
     "Roboto-Bold": require("@/assets/fonts/Roboto/static/Roboto-Bold.ttf"),
   });
-
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const navigation = useNavigation<any>();
   const handleLogin = async () => {
     try {
+      console.log(route.customProp);
       const response:any = await loginAPI({ username, password });
-      console.log(response);
       if (response && response.statusCode == 200) {
+        if (route.customProp == "admin" && response.data.role != "Admin") {
+          alert("Bạn không có quyền truy cập vào trang này!");
+          return;
+        }
         await AsyncStorage.setItem('accessToken', response.data.token);
         await AsyncStorage.setItem('userId', response.data.id);
         await AsyncStorage.setItem('username', response.data.username);
