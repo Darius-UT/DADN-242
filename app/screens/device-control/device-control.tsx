@@ -1,7 +1,10 @@
+import ModalAddDevice from "@/components/common/AddDevice";
+import ModalAddZone from "@/components/common/AddZone";
 import Top_Header from "@/components/common/Top_Header";
 import { getAreas } from "@/services/area.service";
 import * as DataObservation_Style from "@/styles/screens/data-observation/dataObservation";
 import * as DeviceControlScreen_Style from "@/styles/screens/device-control/deviceControl";
+import Login_TT_Style from "@/styles/screens/login/login-tt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useFonts } from "expo-font";
 import { useNavigation } from "expo-router";
@@ -42,6 +45,46 @@ const CardAreaTemplate: React.FC<CardAreaTemplateProps> = ({ areaId, nameArea })
   );
 };
 
+
+// CHỈ SỐ TỔNG QUAN
+const GeneralValue = () => {
+  const [] = useFonts({
+    "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
+    "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
+  });
+
+  const [isVisibleDevice, setModalVisibleDevice] = React.useState(false);
+  const [isVisibleZone, setModalVisibleZone] = React.useState(false);
+
+  return (
+    <View>
+      <TouchableOpacity
+          style={Login_TT_Style.loginButton}
+          onPress={() => setModalVisibleDevice(true)}>
+          <Text style={Login_TT_Style.lastLoginText}>Thêm thiết bị</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
+        style={Login_TT_Style.loginButton}
+        onPress={() => setModalVisibleZone(true)}>
+        <Text style={Login_TT_Style.lastLoginText}>Thêm khu vực</Text>
+      </TouchableOpacity>
+
+      <ModalAddDevice
+        isVisible={isVisibleDevice}
+        setModalVisible={setModalVisibleDevice}
+      />
+
+      <ModalAddZone
+        isVisible={isVisibleZone}
+        setModalVisible={setModalVisibleZone}
+      />
+    </View>
+  );
+};
+
+
+
+
 // ---------- screen ----------
 const DeviceControlScreen = () => {
   useFonts({
@@ -79,6 +122,7 @@ const DeviceControlScreen = () => {
           ))}
         </View>
       </View>
+      <GeneralValue/>
     </View>
   );
 };

@@ -32,41 +32,6 @@ const deviceState_data = [
 ];
 
 
-// CHỈ SỐ TỔNG QUAN
-const GeneralValue = () => {
-  const [] = useFonts({
-    "Roboto-ExtraBold": require("@/assets/fonts/Roboto/static/Roboto-ExtraBold.ttf"),
-    "Roboto-SemiBold": require("@/assets/fonts/Roboto/static/Roboto-SemiBold.ttf"),
-  });
-
-  const [isVisibleDevice, setModalVisibleDevice] = React.useState(false);
-  const [isVisibleZone, setModalVisibleZone] = React.useState(false);
-
-  return (
-    <View>
-      <TouchableOpacity
-          style={Login_TT_Style.loginButton}
-          onPress={() => setModalVisibleDevice(true)}>
-          <Text style={Login_TT_Style.lastLoginText}>Thêm thiết bị</Text>
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={Login_TT_Style.loginButton}
-        onPress={() => setModalVisibleZone(true)}>
-        <Text style={Login_TT_Style.lastLoginText}>Thêm khu vực</Text>
-      </TouchableOpacity>
-
-      <ModalAddDevice
-        isVisible={isVisibleDevice}
-        setModalVisible={setModalVisibleDevice}
-      />
-
-      <ModalAddZone
-        isVisible={isVisibleZone}
-        setModalVisible={setModalVisibleZone}
-      />
-    </View>
-  );
-};
 
 
 // HOẠT ĐỘNG GẦN ĐÂY
@@ -210,9 +175,6 @@ const Home = () => {
             <Text>{GreenHouse_Status}</Text>
           </View>
         </View>
-
-        {/* Mục: Chỉ số tổng quan */}
-        <GeneralValue />
 
         {/* Mục: Hoạt động gần đây */}
         <LatelyHistoryLogs />
