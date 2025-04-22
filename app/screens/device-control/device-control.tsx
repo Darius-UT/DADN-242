@@ -6,6 +6,7 @@ import * as DataObservation_Style from "@/styles/screens/data-observation/dataOb
 import * as DeviceControlScreen_Style from "@/styles/screens/device-control/deviceControl";
 import Login_TT_Style from "@/styles/screens/login/login-tt";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useIsFocused } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { useNavigation } from "expo-router";
 import React from "react";
@@ -95,6 +96,8 @@ const DeviceControlScreen = () => {
 
   const [areas, setAreas] = React.useState<Area[]>([]);
 
+  const isFocused = useIsFocused();
+
   React.useEffect(() => {
     (async () => {
       try {
@@ -105,7 +108,7 @@ const DeviceControlScreen = () => {
         console.log("Không tải được danh sách khu vực:", err);
       }
     })();
-  }, []);
+  }, [isFocused]);
 
   return (
     <View>

@@ -19,6 +19,7 @@ import ModalAddDevice from '@/components/common/AddDevice';
 import ModalAddZone from '@/components/common/AddZone';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAllHistoryLogs } from '@/services/api.service';
+import { useIsFocused } from '@react-navigation/native';
 
 const GreenHouse_Name = "Bách khoa";
 const GreenHouse_Address = "268, Lý Thường Kiệt, P.14, Q.10, Tp Hồ Chí Minh";
@@ -53,11 +54,11 @@ const LatelyHistoryLogs = () => {
       console.error(error);
     }
   }
-
+  const isFocused = useIsFocused();
   useEffect(() => {
     getAllLogs();
 
-  }, []);
+  }, [isFocused]);
 
   const notification = (noti_content: any, noti_time: string) => {
     const content = noti_content.username 

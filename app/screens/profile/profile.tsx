@@ -11,6 +11,7 @@ import { getUser, updateUser } from "@/services/api.service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import moment from 'moment';
 import { TextInput } from "react-native-gesture-handler";
+import { useIsFocused } from "@react-navigation/native";
 
 
 const defaultAvatarImage = "https://thuvienanime.net/wp-content/uploads/2024/11/tu-ba-ba-tu-au-u-thuvienanime-9.jpg";
@@ -177,10 +178,10 @@ const ProfileScreen = () => {
     }
   }
 
-
+  const isFocused = useIsFocused();
   useEffect(() => {
     getInfo();
-  }, []);
+  }, [isFocused]);
 
   const handleLogout = async () => {
     try {
