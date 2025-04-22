@@ -289,10 +289,10 @@ const AverageData  = () => {
       </View>
 
       <View style={DataObservation_Style.AverageData_Style.cardContainer}>
-        {TemperatureCard(30, 28, 29)}
-        {LightCard(3000, 2800, 2900)}
-        {MoistureCard(70, 71, 65)}
-        {SoilMoistureCard(40, 45, 34)}
+        {TemperatureCard(0, 0, 0)}
+        {LightCard(0, 0, 0)}
+        {MoistureCard(0, 0, 0)}
+        {SoilMoistureCard(0, 0, 0)}
       </View>
     </View>
   );

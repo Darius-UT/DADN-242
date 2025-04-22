@@ -130,11 +130,11 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
         const sensor_feedname   = formattedSensorList.find(s => s.id === sensorSelection)?.sensorSymbol;
         var new_action = "";
 
-        if (action === "1") {
-            new_action = deviceSymbol + "/on";
+        if (action === "1" || action === "3") {
+            new_action = deviceSymbol + "/off";
         }
-        else if (action === "2") {
-            new_action = deviceSymbol + "/off"; 
+        else if (action === "2" || action === "4") {
+            new_action = deviceSymbol + "/on"; 
         }
 
         const res = await createRule( new_action , sensor_feedname) 
@@ -144,7 +144,10 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
         let upperBoundReq = upperBound;
         if(negative_inf) lowerBoundReq = "-9999";
         if(positive_inf) upperBoundReq = "9999";
-        const res2 = await createConditionRule("testrule", lowerBoundReq, upperBoundReq, startTimePicker, endTimePicker, res?.data?.id);
+        const timestamp = new Date(0,0,0,0,0,0); // trả về số
+        const newDate = new Date(2050,12,0,0,0,0);
+        newDate.setFullYear(newDate.getFullYear() + 1000);
+        const res2 = await createConditionRule("testrule", lowerBoundReq, upperBoundReq, timestamp, newDate, res?.data?.id);
         if (res && res2) {
             Toast.show({
                 type: 'success',
@@ -267,11 +270,11 @@ const ModalAddRule: React.FC<ModalAddRule_props> = ({ visible, setVisible, rule_
                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                         <TouchableOpacity style={ModalAddRule_Style.timePickerContainer} onPress={() => setStartTimeVisible(true)}>
                             <Text style={ModalAddRule_Style.timePickerText}>Giờ bắt đầu</Text>
-                            <Text style={ModalAddRule_Style.timeText}>{startTimePicker.toISOString()}</Text>
+                            <Text style={ModalAddRule_Style.timeText}>{"00:00:00"}</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={ModalAddRule_Style.timePickerContainer} onPress={() => setEndTimeVisible(true)}>
                             <Text style={ModalAddRule_Style.timePickerText}>Giờ kết thúc</Text>
-                            <Text style={ModalAddRule_Style.timeText}>{endTimePicker.toISOString()}</Text>
+                            <Text style={ModalAddRule_Style.timeText}>{"00:00:00"}</Text>
                         </TouchableOpacity>
                     </View>
 
